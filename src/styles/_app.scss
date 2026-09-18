@@ -1,0 +1,162 @@
+@use 'tokens';
+
+.app {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg);
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  padding: 16px;
+  align-items: stretch;
+  
+  background-color: var(--bg);
+  background-image: var(--wallpaper-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--wallpaper-dim-alpha, 0.3));
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.3s ease;
+  }
+}
+
+.wallpaper-content,
+.app-main,
+.side-nav {
+  position: relative;
+  z-index: 1;
+}
+
+.app-main {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+  gap: 0;
+}
+
+.app-content-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.app-content-slider {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); // Smooth slide
+  will-change: transform;
+}
+
+.app-content-space {
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+  overflow: hidden;
+}
+
+// Placeholder for future spaces
+.placeholder-space {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--muted);
+  opacity: 0.4;
+}
+
+// RTL support
+[dir="rtl"] {
+  .app-content-slider {
+    direction: ltr;
+  }
+}
+
+.app-main-shell {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.app-main-shell > .quick-access {
+  flex: 0 0 auto;
+}
+
+.app-main-shell > .app-main {
+  min-width: 0;
+  min-height: 0;
+}
+
+.settings-button {
+  position: absolute;
+  bottom: 16px;
+  z-index: 100;
+
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  .icon-wrapper {
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background: var(--glass);
+
+    .icon-wrapper {
+      color: var(--text);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--theme-strong);
+    outline-offset: 2px;
+  }
+
+  &.right {
+    right: 16px;
+  }
+
+  &.left {
+    left: 16px;
+  }
+}

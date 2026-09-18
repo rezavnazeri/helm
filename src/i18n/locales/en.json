@@ -1,0 +1,250 @@
+{
+  "common": {
+    "home": "Home",
+    "bookmarks": "Bookmarks",
+    "weather": "Weather",
+    "tasks": "Tasks",
+    "notes": "Notes",
+    "reminders": "Reminders",
+    "settings": "Settings",
+    "loading": "Loading…",
+    "close": "Close",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "remove": "Remove"
+  },
+  "general": {
+    "clock": "Clock",
+    "clockFormat": "Clock format",
+    "hours24": "24-hour",
+    "hours12": "12-hour",
+    "date": "Date",
+    "showGreeting": "Show greeting",
+    "name": "Name",
+    "yourName": "Your name",
+    "quickWeather": "Show weather on Home",
+    "greetings": {
+      "night": [
+        "Good night",
+        "Still up?",
+        "Hello, night owl",
+        "A quiet night to you",
+        "Late-night mode",
+        "Hello from the quiet hours"
+      ],
+      "morning": [
+        "Good morning",
+        "Morning",
+        "A fresh morning to you",
+        "Rise and shine",
+        "A beautiful morning to begin",
+        "Good morning — let's make it count"
+      ],
+      "afternoon": [
+        "Good afternoon",
+        "Afternoon!",
+        "Hope your afternoon is going well",
+        "A good afternoon to you",
+        "Hello, this afternoon",
+        "Keep going — you've got this"
+      ],
+      "evening": [
+        "Good evening",
+        "Evening!",
+        "A peaceful evening to you",
+        "Hope you had a good day",
+        "Welcome to the evening",
+        "Time to wind down"
+      ],
+      "lateNight": [
+        "Good evening",
+        "Hello, night owl",
+        "Still going?",
+        "The night is yours",
+        "A quiet night to you",
+        "Welcome back, night owl"
+      ]
+    },
+    "sideNav": "Navigation Bar",
+    "sideNavPosition": "Navigation Bar position",
+    "sideNavLeft": "Left",
+    "sideNavTop": "Top",
+    "sideNavRight": "Right",
+    "sideNavBottom": "Bottom",
+    "quickAccess": "Quick Access",
+    "quickAccessPosition": "Quick Access position",
+    "quickAccessPositions": {
+      "left": "Left",
+      "top": "Top",
+      "right": "Right",
+      "bottom": "Bottom",
+      "below-header": "Below header"
+    }
+  },
+  "bookmarks": {
+    "add": "Add a bookmark",
+    "group": "Group",
+    "count": "{{count}} items",
+    "options": "Options"
+  },
+  "app": {
+    "name": "Helm"
+  },
+  "settings": {
+    "groups": {
+      "general": "General",
+      "appearance": "Appearance",
+      "weather": "Weather",
+      "spaces": "Spaces",
+      "language": "Language & Region",
+      "behavior": "Behavior",
+      "data": "Data",
+      "about": "About"
+    },
+    "title": "Settings",
+    "close": "Close settings"
+  },
+  "appearance": {
+    "wallpaper": "Wallpaper",
+    "customWallpaper": "Custom wallpaper",
+    "wallpaperDimming": "Wallpaper dimming",
+    "none": "None",
+    "strong": "Strong",
+    "theme": "Theme",
+    "themes": {
+      "auto": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "wallpapers": {
+      "default": "Default",
+      "duneNight": "Dune — Night",
+      "duneDay": "Dune — Day",
+      "alpenglow": "Alpenglow",
+      "bmw": "BMW",
+      "coast": "Coast",
+      "colorful": "Colorful",
+      "forest": "Forest",
+      "iceberg": "Iceberg",
+      "minimal": "Minimal",
+      "nebula": "Nebula",
+      "porsche": "Porsche"
+    },
+    "processing": "Processing…",
+    "customWallpaperError": "The selected image could not be saved as a wallpaper.",
+    "customWallpaperTooLarge": "The processed wallpaper is too large to store locally."
+  },
+  "weather": {
+    "location": "Location",
+    "locationPlaceholder": "Search for a city…",
+    "useCurrentLocation": "Use current location",
+    "currentLocation": "Current location",
+    "units": "Units",
+    "serviceHelp": "Weather data is provided by Open-Meteo. Location access is optional.",
+    "locationSearchFailed": "Location search failed",
+    "locationNotFound": "Location not found",
+    "fetchFailed": "Unable to load weather",
+    "codes": {
+      "0": "Clear sky",
+      "1": "Mainly clear",
+      "2": "Partly cloudy",
+      "3": "Overcast",
+      "45": "Foggy",
+      "48": "Rime fog",
+      "51": "Light drizzle",
+      "53": "Drizzle",
+      "55": "Dense drizzle",
+      "61": "Slight rain",
+      "63": "Rain",
+      "65": "Heavy rain",
+      "71": "Slight snow",
+      "73": "Snow",
+      "75": "Heavy snow",
+      "80": "Rain showers",
+      "81": "Moderate rain showers",
+      "82": "Heavy rain showers",
+      "95": "Thunderstorm",
+      "96": "Thunderstorm with hail",
+      "99": "Thunderstorm with heavy hail"
+    }
+  },
+  "spaces": {
+    "dragToReorder": "Drag to reorder",
+    "help": "Hide spaces you do not use. Home cannot be disabled."
+  },
+  "language": {
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "fa": "فارسی"
+    },
+    "dateFormat": "Date format",
+    "dateFormats": {
+      "local": "Local",
+      "long": "Long",
+      "medium": "Medium",
+      "short": "Short"
+    },
+    "firstDay": "First day of week",
+    "days": {
+      "monday": "Mon",
+      "sunday": "Sun",
+      "saturday": "Sat"
+    },
+    "textDirection": "Text direction",
+    "directions": {
+      "auto": "Auto (LTR)",
+      "ltr": "Left to right (LTR)",
+      "rtl": "Right to left (RTL)"
+    }
+  },
+  "behavior": {
+    "rememberLastSpace": "Remember last space",
+    "swipeNavigation": "Swipe between spaces",
+    "reducedMotion": "Reduce motion"
+  },
+  "data": {
+    "exportTitle": "Backup",
+    "exportDescription": "Export your Helm settings and local data.",
+    "export": "Export backup",
+    "import": "Import backup",
+    "importConfirm": "Importing will replace your current Helm settings and local data. Continue?",
+    "resetTitle": "Danger Zone",
+    "resetDescription": "This removes Helm local settings, tasks, notes, reminders, and Quick Access configuration.",
+    "reset": "Reset Helm",
+    "resetConfirm": "Reset Helm and remove all local data?",
+    "exportFailed": "Export failed",
+    "importFailed": "Import failed",
+    "invalidBackup": "Invalid backup file"
+  },
+  "about": {
+    "version": "Version 0.3.0",
+    "description": "Helm is an open-source, local-first new-tab experience for your browser.",
+    "github": "GitHub",
+    "licenses": "Licenses",
+    "privacy": "Privacy"
+  },
+  "exit": {
+    "title": "Exit Helm",
+    "defaultTab": "Exit to default new tab",
+    "disable": "Disable Helm",
+    "defaultTabHelp": "Open a new tab without replacing it with Helm.",
+    "disableHelp": "Open Chrome extension management so Helm can be disabled.",
+    "failed": "Chrome could not open the requested page."
+  },
+  "navigation": {
+    "edit": "Edit"
+  },
+  "quickAccess": {
+    "add": "Add shortcut",
+    "addTitle": "Add shortcut",
+    "editTitle": "Edit shortcut",
+    "name": "Name (Optional)",
+    "url": "URL",
+    "invalid": "Enter a valid website address.",
+    "limit": "You can have up to 20 shortcuts.",
+    "nameHint": "Helm will fetch the name automatically.",
+    "edit": "Edit"
+  }
+}

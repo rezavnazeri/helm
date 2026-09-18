@@ -1,0 +1,255 @@
+@use 'glass' as *;
+
+.quick-access {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.quick-access-items {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-access-button {
+  @include glass;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    @include glass-button;
+    z-index: 20;
+  }
+
+  &:focus-visible {
+    z-index: 20;
+  }
+}
+
+.quick-access-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+.quick-access-add .icon-wrapper {
+  color: var(--muted);
+}
+
+.quick-access--left,
+.quick-access--right {
+  width: fit-content;
+  min-width: 48px;
+  height: 100%;
+  //padding: 12px 6px;
+}
+
+.quick-access--left .quick-access-items {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  max-width: calc(44px * 2 + 6px);
+}
+
+.quick-access--right .quick-access-items {
+  height: 100%;
+  flex-direction: column;
+  flex-wrap: wrap-reverse;
+  align-content: center;
+  justify-content: center;
+  max-width: calc(44px * 2 + 6px);
+}
+
+.quick-access--top,
+.quick-access--bottom {
+  width: 100%;
+  height: fit-content;
+  min-height: 48px;
+  //padding: 6px 12px;
+}
+
+.quick-access--top .quick-access-items,
+.quick-access--bottom .quick-access-items {
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+}
+
+.quick-access--below-header {
+  width: 100%;
+  height: fit-content;
+  //padding: 8px 0;
+}
+
+.quick-access--below-header .quick-access-items {
+  width: min(100%, 1000px);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+}
+
+.quick-access-context-menu {
+  position: fixed;
+  z-index: 300;
+  min-width: 140px;
+  //padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+}
+
+.quick-access-context-menu button {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 12px;
+  gap: 8px;
+  align-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+}
+
+.quick-access-context-menu button:hover {
+  background: var(--row);
+}
+
+.quick-access-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--glass-strong);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(28px);
+}
+
+.quick-access-dialog h2 {
+  margin: 0 0 20px;
+  font-size: 18px;
+}
+
+.quick-access-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.quick-access-field span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.quick-access-field .text-input {
+  width: 100%;
+}
+
+.quick-access-error {
+  margin: 4px 0 12px;
+  color: #ef4444;
+  font-size: 12px;
+}
+
+.quick-access-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.quick-access-button[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 20;
+  width: max-content;
+  max-width: 180px;
+  padding: 5px 8px;
+  //border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--glass-strong);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-access-button[data-tooltip]:hover::after,
+.quick-access-button[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quick-access--top .quick-access-button[data-tooltip]::after,
+.quick-access--below-header .quick-access-button[data-tooltip]::after {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.quick-access--bottom .quick-access-button[data-tooltip]::after {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.quick-access--left .quick-access-button[data-tooltip]::after {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.quick-access--right .quick-access-button[data-tooltip]::after {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.quick-access-button:focus-visible {
+  outline: 2px solid var(--theme-strong);
+  outline-offset: 2px;
+}
+.quick-access-button {
+  user-select: none;
+
+  &.is-dragging {
+    opacity: 0.45;
+  }
+
+  &.is-drag-over {
+    outline: 2px solid var(--theme-strong);
+    outline-offset: 2px;
+  }
+}
