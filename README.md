@@ -1,6 +1,6 @@
 # Helm
 
-Helm is a calm, wallpaper-first new tab environment for Chrome. It provides a customizable visual starting point with quick access shortcuts, personalization, weather, and lightweight browser utilities.
+Helm is a calm, wallpaper-first new tab environment for Chrome. It provides a customizable visual starting point with quick-access shortcuts, personalization, weather, and lightweight browser utilities.
 
 Helm is designed around a simple idea: **your new tab should be a useful workspace, not just a blank page.**
 
@@ -8,8 +8,8 @@ Helm is designed around a simple idea: **your new tab should be a useful workspa
 
 <img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_06_50 PM" src="https://github.com/user-attachments/assets/00efd8c1-bf6a-4aae-a6f8-6af7ca7e9a0c" />
 <img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_07_56 PM" src="https://github.com/user-attachments/assets/68cf2a00-3a12-415a-b6a9-496bf5ec2b71" />
+<img width="1919" height="905" alt="Screenshot 2026-10-30 183436" src="https://github.com/user-attachments/assets/92f62e1d-fede-48df-83eb-dc980c4eab36" />
 <img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_07_27 PM" src="https://github.com/user-attachments/assets/efb3b575-6be5-4671-988e-aa91ceef2f30" />
-<img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_07_07 PM" src="https://github.com/user-attachments/assets/623fa046-88ca-46dc-a72c-991db1cf6576" />
 
 ## Features
 
