@@ -11,6 +11,7 @@ const DataSettings: React.FC = () => {
   const exportData = async () => {
     try {
       const result = await chrome.storage.local.get(null);
+      delete result.faviconCache;
       const blob = new Blob(
         [JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), ...result }, null, 2)],
         { type: 'application/json' },
@@ -37,7 +38,7 @@ const DataSettings: React.FC = () => {
       if (!parsed || typeof parsed !== 'object') throw new Error('invalid');
 
       const record = parsed as Record<string, unknown>;
-      const allowed = ['settings', 'bookmarkGroups', 'quickAccessShortcuts', 'todos', 'notes', 'reminders'];
+      const allowed = ['settings', 'bookmarkSpace', 'quickAccessShortcuts', 'todos', 'notes', 'reminders'];
       const payload = Object.fromEntries(
         allowed.filter((key) => key in record).map((key) => [key, record[key]]),
       );

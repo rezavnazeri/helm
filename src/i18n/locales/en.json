@@ -86,7 +86,40 @@
     "add": "Add a bookmark",
     "group": "Group",
     "count": "{{count}} items",
-    "options": "Options"
+    "options": "Options",
+    "untitled": "Untitled",
+    "folderOptions": "Folder options",
+    "bookmarkOptions": "Bookmark options",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "open": "Open",
+    "openNewTab": "Open in a new tab",
+    "openNewWindow": "Open in a new window",
+    "openAll": "Open all",
+    "openAllNewTabs": "Open all in new tabs",
+    "openAllNewWindow": "Open all in a new window",
+    "rename": "Rename",
+    "remove": "Remove from space",
+    "delete": "Delete",
+    "renameFolder": "Rename folder",
+    "renameBookmark": "Rename bookmark",
+    "emptyFolder": "No bookmarks in this folder.",
+    "emptyTitle": "No folders yet",
+    "emptyHint": "Choose a folder from your Chrome bookmarks to show it here.",
+    "addFolder": "Add a folder",
+    "unavailable": "Chrome bookmarks are not available here.",
+    "icons": {
+      "bookmark": "Bookmark",
+      "folder": "Folder",
+      "home": "Home",
+      "globe": "Globe",
+      "tasks": "List",
+      "notes": "Notes",
+      "reminders": "Bell",
+      "palette": "Palette",
+      "data": "Data",
+      "user": "User"
+    }
   },
   "app": {
     "name": "Helm"
@@ -219,7 +252,7 @@
     "invalidBackup": "Invalid backup file"
   },
   "about": {
-    "version": "Version 0.3.0",
+    "version": "Version 0.4.0",
     "description": "Helm is an open-source, local-first new-tab experience for your browser.",
     "github": "GitHub",
     "licenses": "Licenses",
@@ -234,7 +267,8 @@
     "failed": "Chrome could not open the requested page."
   },
   "navigation": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "add": "Add"
   },
   "quickAccess": {
     "add": "Add shortcut",
@@ -246,5 +280,13 @@
     "limit": "You can have up to 20 shortcuts.",
     "nameHint": "Helm will fetch the name automatically.",
     "edit": "Edit"
+  },
+  "addDialog": {
+    "title": "Add a bookmark folder",
+    "description": "Choose a folder from your Chrome bookmarks to show in Helm.",
+    "folderIcon": "Icon",
+    "added": "Added",
+    "noFolders": "No bookmark folders found.",
+    "submit": "Add folder"
   }
 }

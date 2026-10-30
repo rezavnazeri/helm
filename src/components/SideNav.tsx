@@ -9,6 +9,7 @@ interface SideNavProps {
   activeSpace: Space;
   onSpaceChange: (space: Space) => void;
   onOpenSettings: () => void;
+  onOpenAdd: () => void;
 }
 
 interface IndicatorStyle {
@@ -23,6 +24,7 @@ const SideNav: React.FC<SideNavProps> = ({
   activeSpace,
   onSpaceChange,
   onOpenSettings,
+  onOpenAdd,
 }) => {
   const { t } = useI18n();
   const { settings } = useSettings();
@@ -155,9 +157,10 @@ const SideNav: React.FC<SideNavProps> = ({
         <button
           type="button"
           className="nav-utility"
-          aria-label={t('navigation.edit')}
+          aria-label={t('navigation.add')}
+          onClick={onOpenAdd}
         >
-          <Icon name="edit" variant="line" size={18} />
+          <Icon name="plus" variant="line" size={20} />
         </button>
 
         <button

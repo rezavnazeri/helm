@@ -3,6 +3,8 @@ import {
   QuickAccessShortcut,
 } from '@/types/quickAccess';
 
+import { remoteFaviconUrl } from '@/services/faviconCache';
+
 const STORAGE_KEY = 'quickAccessShortcuts';
 
 const DEFAULT_SHORTCUTS: QuickAccessShortcut[] = [
@@ -63,8 +65,7 @@ const storage = {
   },
 };
 
-const faviconFor = (url: string) =>
-  `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(url)}&sz=64`;
+const faviconFor = remoteFaviconUrl;
 
 const automaticNameFor = (url: string) => {
   try {

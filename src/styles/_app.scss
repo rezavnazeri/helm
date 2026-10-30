@@ -8,8 +8,8 @@
   background: var(--bg);
   display: flex;
   flex-direction: row;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
   align-items: stretch;
   
   background-color: var(--bg);
@@ -44,12 +44,15 @@
   overflow: hidden;
   position: relative;
   background: transparent;
-  gap: 0;
+  gap: 16px;
 }
 
 .app-content-track {
   flex: 1;
   overflow: hidden;
+  overflow: clip;
+  min-width: 0;
+  min-height: 0;
   position: relative;
   display: flex;
   align-items: stretch;
@@ -66,6 +69,7 @@
 }
 
 .app-content-space {
+  position: relative;
   flex: 0 0 100%;
   height: 100%;
   display: flex;
@@ -74,7 +78,52 @@
   overflow: hidden;
 }
 
-// Placeholder for future spaces
+.space-scroll {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+[dir='rtl'] .space-scroll {
+  direction: rtl;
+}
+
+.space-clip-shadow {
+  position: absolute;
+  inset-inline: 0;
+  height: 32px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.space-clip-shadow.is-visible {
+  opacity: 1;
+}
+
+.space-clip-shadow--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--space-clip-shadow) 0%,
+    color-mix(in srgb, var(--space-clip-shadow) 45%, transparent) 40%,
+    transparent 100%
+  );
+}
+
+.space-clip-shadow--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--space-clip-shadow) 0%,
+    color-mix(in srgb, var(--space-clip-shadow) 45%, transparent) 40%,
+    transparent 100%
+  );
+}
+
 .placeholder-space {
   width: 100%;
   height: 100%;
@@ -87,7 +136,6 @@
   opacity: 0.4;
 }
 
-// RTL support
 [dir="rtl"] {
   .app-content-slider {
     direction: ltr;
@@ -101,7 +149,7 @@
   min-height: 0;
   flex: 1;
   display: flex;
-  gap: 16px;
+  gap: 12px;
   overflow: hidden;
 }
 
@@ -114,15 +162,27 @@
   min-height: 0;
 }
 
-.settings-button {
+.floating-utilities {
   position: absolute;
-  bottom: 16px;
+  bottom: 12px;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 
+  &.right {
+    right: 16px;
+  }
+
+  &.left {
+    left: 16px;
+  }
+}
+
+.floating-utility {
   width: 44px;
   height: 44px;
   padding: 0;
-
   border: 0;
   border-radius: 12px;
   background: transparent;
@@ -150,13 +210,5 @@
   &:focus-visible {
     outline: 2px solid var(--theme-strong);
     outline-offset: 2px;
-  }
-
-  &.right {
-    right: 16px;
-  }
-
-  &.left {
-    left: 16px;
   }
 }

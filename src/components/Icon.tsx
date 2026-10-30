@@ -4,6 +4,7 @@ export type IconName =
   | 'helm'
   | 'home'
   | 'bookmark'
+  | 'folder'
   | 'tasks'
   | 'notes'
   | 'reminders'
@@ -33,7 +34,8 @@ export type IconName =
   | 'external-link'
   | 'download'
   | 'alert'
-  | 'drag';
+  | 'drag'
+  | 'cloud';
 
 interface IconProps {
   name: IconName;
@@ -47,6 +49,7 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   helm: { line: '/icons/helm.svg' },
   home: { line: '/icons/home-line.svg', solid: '/icons/home-solid.svg' },
   bookmark: { line: '/icons/bookmark-line.svg', solid: '/icons/bookmark-solid.svg' },
+  folder: { line: '/icons/folder-line.svg', solid: '/icons/folder-line.svg' },
   tasks: { line: '/icons/list-box-line.svg', solid: '/icons/list-box-solid.svg' },
   notes: { line: '/icons/noteblock-text-line.svg', solid: '/icons/noteblock-text-solid.svg' },
   reminders: { line: '/icons/bell-line.svg', solid: '/icons/bell-solid.svg' },
@@ -61,6 +64,7 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   globe: { line: '/icons/globe-grid-line.svg' },
   layout: { line: '/icons/layout-line.svg', solid: '/icons/layout-line.svg' },
   data: { line: '/icons/data-line.svg' },
+  user: { line: '/icons/user-line.svg' },
   info: { line: '/icons/info-circle-line.svg' },
   'log-out': { line: '/icons/logout-line.svg', solid: '/icons/logout-line.svg' },
   'more-menu': { line: '/icons/more-menu-line.svg', solid: '/icons/more-menu-line.svg' },
@@ -75,7 +79,8 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   upload: { line: '/icons/upload-line.svg', solid: '/icons/upload-line.svg' },
   alert: { line: '/icons/alert-line.svg', solid: '/icons/alert-line.svg' },
   'external-link': { line: '/icons/external-link-line.svg', solid: '/icons/external-link-line.svg' },
-  delete: {line: '/icons/delete-bin-line.svg'}
+  delete: {line: '/icons/delete-bin-line.svg'},
+  cloud: {line: '/icons/cloud-line.svg'}
 };
 
 const Icon: React.FC<IconProps> = ({ name, variant = 'line', size = 20, color = 'currentColor', className = '' }) => {

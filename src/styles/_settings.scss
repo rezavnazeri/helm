@@ -81,7 +81,7 @@
   border-radius: 10px;
   border: none;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -218,7 +218,8 @@
 }
 
 .segmented-btn {
-  padding: 6px 16px;
+  padding: 4px 16px;
+  padding-top: 6px;
   border: none;
   background: transparent;
   color: var(--muted);

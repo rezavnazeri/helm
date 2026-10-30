@@ -94,7 +94,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               >
                 <Icon
                   name={SETTINGS_GROUP_ICONS[group]}
-                  size={22}
+                  size={20}
                 />
 
                 <span>

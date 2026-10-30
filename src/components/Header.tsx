@@ -59,7 +59,7 @@ const Header: React.FC = () => {
     <header className="app-header">
       {settings.showClock && <div className="header-clock">{formatTime()}</div>}
       {settings.showDate && <div className="header-date">{formatDate()}</div>}
-      {settings.showGreeting && <div className="greeting-text">{greeting}</div>}
+      {settings.showGreeting && <div className="header-greeting">{greeting}</div>}
 
       {settings.showQuickWeather && (settings.weatherLocation || weather) && (
         <div className="weather-widget">

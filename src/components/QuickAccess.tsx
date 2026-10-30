@@ -4,6 +4,7 @@ import { QuickAccessPosition } from '@/types/settings';
 import { useSettings } from '@/context/useSettings';
 import Icon from '@/components/Icon';
 import { QuickAccessService } from '@/services/quickAccess';
+import { useCachedFavicons } from '@/hooks/useCachedFavicons';
 import { MAX_QUICK_ACCESS_SHORTCUTS, QuickAccessShortcut } from '@/types/quickAccess';
 
 interface QuickAccessProps {
@@ -48,6 +49,29 @@ const isValidUrl = (value: string) => {
   } catch {
     return false;
   }
+};
+
+interface ShortcutFaviconProps {
+  src?: string;
+  fallbackSrc: string;
+  failed: boolean;
+}
+
+const ShortcutFavicon: React.FC<ShortcutFaviconProps> = ({ src, fallbackSrc, failed }) => {
+  const [broken, setBroken] = useState(false);
+  const imageSrc = src ?? (failed ? fallbackSrc : undefined);
+
+  if (broken) return <Icon name="globe" size={18} />;
+  if (!imageSrc) return null;
+
+  return (
+    <img
+      src={imageSrc}
+      alt=""
+      draggable={false}
+      onError={() => setBroken(true)}
+    />
+  );
 };
 
 const ShortcutDialog: React.FC<ShortcutDialogProps> = ({ shortcut, onClose, onSaved }) => {
@@ -116,6 +140,7 @@ const QuickAccess: React.FC<QuickAccessProps> = ({ position }) => {
   const { settings } = useSettings();
   const { t } = useI18n();
   const [shortcuts, setShortcuts] = useState<QuickAccessShortcut[]>([]);
+  const [shortcutsLoaded, setShortcutsLoaded] = useState(false);
   const [dialogShortcut, setDialogShortcut] = useState<QuickAccessShortcut | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [menu, setMenu] = useState<ContextMenuState | null>(null);
@@ -130,7 +155,12 @@ const QuickAccess: React.FC<QuickAccessProps> = ({ position }) => {
   const suppressClickRef = useRef(false);
   const actualPosition = position ?? settings.quickAccessPosition;
 
-  const load = async () => setShortcuts(await QuickAccessService.getAll());
+  const favicons = useCachedFavicons(shortcuts, shortcutsLoaded);
+
+  const load = async () => {
+    setShortcuts(await QuickAccessService.getAll());
+    setShortcutsLoaded(true);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -141,6 +171,7 @@ const QuickAccess: React.FC<QuickAccessProps> = ({ position }) => {
 
         if (!cancelled) {
           setShortcuts(shortcuts);
+          setShortcutsLoaded(true);
         }
       } catch (error) {
         console.error('Failed to load Quick Access:', error);
@@ -243,36 +274,47 @@ const QuickAccess: React.FC<QuickAccessProps> = ({ position }) => {
     <>
       <div className={`quick-access quick-access--${actualPosition}`}>
         <div className="quick-access-items">
-          {shortcuts.map((shortcut) => (
-            <button
-              key={shortcut.id}
-              type="button"
-              className={`quick-access-button${draggedId === shortcut.id ? ' is-dragging' : ''}${dragOverId === shortcut.id ? ' is-drag-over' : ''}`}
-              aria-label={shortcut.name}
-              data-tooltip={shortcut.name}
-              draggable
-              onClick={() => {
-                if (suppressClickRef.current) {
-                  suppressClickRef.current = false;
-                  return;
-                }
-                openShortcut(shortcut.url);
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                setMenu({ id: shortcut.id, x: e.clientX, y: e.clientY });
-              }}
-              onDragStart={(e) => handleDragStart(e, shortcut.id)}
-              onDragOver={(e) => handleDragOver(e, shortcut.id)}
-              onDrop={(e) => void handleDrop(e, shortcut.id)}
-              onDragEnd={handleDragEnd}
-              onDragLeave={() => {
-                if (dragOverId === shortcut.id) setDragOverId(null);
-              }}
-            >
-              <img src={shortcut.favicon} alt="" loading="lazy" draggable={false} />
-            </button>
-          ))}
+          {shortcuts.map((shortcut) => {
+            const icon = favicons.resolve(shortcut);
+
+            return (
+              <button
+                key={shortcut.id}
+                type="button"
+                className={`quick-access-button${draggedId === shortcut.id ? ' is-dragging' : ''}${dragOverId === shortcut.id ? ' is-drag-over' : ''}`}
+                aria-label={shortcut.name}
+                data-tooltip={shortcut.name}
+                draggable
+                onClick={() => {
+                  if (suppressClickRef.current) {
+                    suppressClickRef.current = false;
+                    return;
+                  }
+                  openShortcut(shortcut.url);
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setMenu({ id: shortcut.id, x: e.clientX, y: e.clientY });
+                }}
+                onDragStart={(e) => handleDragStart(e, shortcut.id)}
+                onDragOver={(e) => handleDragOver(e, shortcut.id)}
+                onDrop={(e) => void handleDrop(e, shortcut.id)}
+                onDragEnd={handleDragEnd}
+                onDragLeave={() => {
+                  if (dragOverId === shortcut.id) setDragOverId(null);
+                }}
+              >
+                {favicons.ready && (
+                  <ShortcutFavicon
+                    key={icon.src ?? 'remote'}
+                    src={icon.src}
+                    fallbackSrc={shortcut.favicon}
+                    failed={icon.failed}
+                  />
+                )}
+              </button>
+            );
+          })}
 
           {shortcuts.length < MAX_QUICK_ACCESS_SHORTCUTS && (
             <button

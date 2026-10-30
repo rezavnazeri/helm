@@ -14,36 +14,66 @@ import Header from './components/Header';
 import Home from './spaces/Home';
 import Bookmarks from './spaces/Bookmarks';
 import SettingsDialog from './components/settings/SettingsDialog';
+import AddDialog from './components/AddDialog';
+import SpaceViewport from './components/SpaceViewport';
 import QuickAccess from './components/QuickAccess';
 
+import '@fontsource-variable/hanken-grotesk';
 import './styles/index.scss';
 import Icon from './components/Icon';
+
+const LAST_SPACE_KEY = 'helm-last-space';
+
+const readLastSpace = (): Space | undefined => {
+  try {
+    const value = localStorage.getItem(LAST_SPACE_KEY) as Space | null;
+    return value && SECTIONS.includes(value) ? value : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+const writeLastSpace = (space: Space) => {
+  try {
+    localStorage.setItem(LAST_SPACE_KEY, space);
+  } catch {
+    // Remembering the last space is optional.
+  }
+};
 
 const MainApp: React.FC = () => {
   const { settings } = useSettings();
   const { t, dir } = useI18n();
 
-  const [activeSpace, setActiveSpace] = useState<Space>('home');
+  const [activeSpace, setActiveSpace] = useState<Space>(
+    () => (settings.rememberLastSpace ? readLastSpace() : undefined) ?? 'home',
+  );
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const handleOpenSettings = useCallback(() => {
     setSettingsOpen(true);
   }, []);
 
+  const handleOpenAdd = useCallback(() => {
+    setAddOpen(true);
+  }, []);
+
+  const handleCloseAdd = useCallback(() => {
+    setAddOpen(false);
+  }, []);
+
   const settingsButtonSide =
     settings.quickAccessPosition === 'left' ? 'right' : 'left';
 
-  // Apply wallpaper
   useWallpaper();
 
-  // Apply language direction
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute('lang', settings.language);
     root.setAttribute('dir', dir);
   }, [settings.language, dir]);
 
-  // Apply reduced motion
   useEffect(() => {
     const root = document.documentElement;
 
@@ -54,15 +84,12 @@ const MainApp: React.FC = () => {
     }
   }, [settings.reducedMotion]);
 
-  // Filter visible spaces
   const visibleSections = settings.spaceOrder.filter(
     (space): space is Space =>
       SECTIONS.includes(space as Space) &&
       settings.visibleSpaces[space] !== false,
   );
 
-  // Keep the currently displayed space valid without synchronizing state
-  // inside an effect.
   const safeActiveSpace = visibleSections.includes(activeSpace)
     ? activeSpace
     : 'home';
@@ -72,9 +99,24 @@ const MainApp: React.FC = () => {
     visibleSections.indexOf(safeActiveSpace),
   );
 
-  // Keyboard navigation
+  useEffect(() => {
+    if (settings.rememberLastSpace) {
+      writeLastSpace(safeActiveSpace);
+    }
+  }, [settings.rememberLastSpace, safeActiveSpace]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (settingsOpen || addOpen) return;
+
+      const target = e.target;
+      if (
+        target instanceof Element &&
+        target.closest('input, textarea, select, [contenteditable="true"]')
+      ) {
+        return;
+      }
+
       const idx = visibleSections.indexOf(safeActiveSpace);
 
       if (e.key === 'ArrowRight' && idx < visibleSections.length - 1) {
@@ -91,9 +133,8 @@ const MainApp: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [safeActiveSpace, visibleSections]);
+  }, [safeActiveSpace, visibleSections, settingsOpen, addOpen]);
 
-  // Swipe navigation
   const handleSwipe = useCallback(
     (direction: 'left' | 'right') => {
       if (!settings.swipeNavigation) return;
@@ -124,13 +165,19 @@ const MainApp: React.FC = () => {
     setActiveSpace(space);
   }, []);
 
+  const handleFolderAdded = useCallback(() => {
+    if (visibleSections.includes('bookmarks')) {
+      setActiveSpace('bookmarks');
+    }
+  }, [visibleSections]);
+
   const renderSpace = () => {
     switch (safeActiveSpace) {
       case 'home':
         return <Home />;
 
       case 'bookmarks':
-        return <Bookmarks />;
+        return <Bookmarks onAddFolder={handleOpenAdd} />;
 
       default:
         return (
@@ -156,6 +203,7 @@ const MainApp: React.FC = () => {
       activeSpace={safeActiveSpace}
       onSpaceChange={handleSpaceChange}
       onOpenSettings={handleOpenSettings}
+      onOpenAdd={handleOpenAdd}
     />
   );
 
@@ -167,14 +215,25 @@ const MainApp: React.FC = () => {
       {settings.sideNavEnabled && sideNav}
 
       {!settings.sideNavEnabled && (
-        <button
-          type="button"
-          className={`settings-button ${settingsButtonSide}`}
-          aria-label={t('common.settings')}
-          onClick={handleOpenSettings}
-        >
-          <Icon name="settings" size={20} />
-        </button>
+        <div className={`floating-utilities ${settingsButtonSide}`}>
+          <button
+            type="button"
+            className="floating-utility"
+            aria-label={t('navigation.add')}
+            onClick={handleOpenAdd}
+          >
+            <Icon name="plus" size={20} />
+          </button>
+
+          <button
+            type="button"
+            className="floating-utility"
+            aria-label={t('common.settings')}
+            onClick={handleOpenSettings}
+          >
+            <Icon name="settings" size={20} />
+          </button>
+        </div>
       )}
 
       <div
@@ -206,9 +265,11 @@ const MainApp: React.FC = () => {
                   key={space}
                   className="app-content-space"
                 >
-                  {space === safeActiveSpace
-                    ? renderSpace()
-                    : null}
+                  <SpaceViewport>
+                    {space === safeActiveSpace
+                      ? renderSpace()
+                      : null}
+                  </SpaceViewport>
                 </div>
               ))}
             </div>
@@ -219,6 +280,12 @@ const MainApp: React.FC = () => {
       <SettingsDialog
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
+      />
+
+      <AddDialog
+        isOpen={addOpen}
+        onClose={handleCloseAdd}
+        onFolderAdded={handleFolderAdded}
       />
     </div>
   );

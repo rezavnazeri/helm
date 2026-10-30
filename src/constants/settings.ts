@@ -17,7 +17,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
 export const SETTINGS_GROUP_ICONS: Record<SettingsGroup, IconName> = {
   general: 'adjustments',
   appearance: 'palette',
-  weather: 'weather',
+  weather: 'cloud',
   spaces: 'layout',
   language: 'globe',
   behavior: 'settings',

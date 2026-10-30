@@ -1,0 +1,66 @@
+@use 'tokens';
+
+.context-menu {
+  position: fixed;
+  z-index: 300;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  outline: none;
+}
+
+.context-menu-item {
+  display: flex;
+  grid-template-columns: 16px 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+  outline: none;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background: var(--row);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &.is-danger {
+    color: var(--danger);
+  }
+}
+
+.context-menu-icon {
+  color: var(--muted);
+}
+
+.context-menu-item.is-danger .context-menu-icon {
+  color: var(--danger);
+}
+
+.context-menu-separator {
+  height: 1px;
+  margin: 5px 6px;
+  background: var(--border);
+}
+
+.context-menu-item .context-menu-icon {
+  width: 16px;
+  height: 16px;
+}

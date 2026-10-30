@@ -22,7 +22,7 @@ const AboutSettings: React.FC = () => {
       <p className="about-description">{t('about.description')}</p>
 
       <div className="about-links">
-        <a href="https://github.com/" target="_blank" rel="noreferrer">
+        <a href="https://github.com/rezavnazeri/helm" target="_blank" rel="noreferrer">
           {t('about.github')}
           <Icon name="external-link" size={14} />
         </a>
