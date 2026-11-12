@@ -30,9 +30,9 @@ export const useGridMetrics = (
       const width = container.clientWidth;
       if (width <= 0) return;
 
-      const minWidth = readPx(container, '--bm-min-width', DEFAULTS.minWidth);
-      const maxWidth = readPx(container, '--bm-max-width', DEFAULTS.maxWidth);
-      const gap = readPx(container, '--bm-gap', DEFAULTS.gap);
+      const minWidth = readPx(container, '--card-min-width', DEFAULTS.minWidth);
+      const maxWidth = readPx(container, '--card-max-width', DEFAULTS.maxWidth);
+      const gap = readPx(container, '--card-gap', DEFAULTS.gap);
 
       const columns = Math.max(1, Math.floor((width + gap) / (minWidth + gap)));
       const shared = Math.floor((width - gap * (columns - 1)) / columns);

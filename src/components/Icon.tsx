@@ -8,6 +8,7 @@ export type IconName =
   | 'tasks'
   | 'notes'
   | 'reminders'
+  | 'layers'
   | 'palette'
   | 'cloud-sun'
   | 'layout'
@@ -35,7 +36,12 @@ export type IconName =
   | 'download'
   | 'alert'
   | 'drag'
-  | 'cloud';
+  | 'cloud'
+  | 'code'
+  | 'clock'
+  | 'beach'
+  | 'play'
+  | 'book';
 
 interface IconProps {
   name: IconName;
@@ -49,17 +55,15 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   helm: { line: '/icons/helm.svg' },
   home: { line: '/icons/home-line.svg', solid: '/icons/home-solid.svg' },
   bookmark: { line: '/icons/bookmark-line.svg', solid: '/icons/bookmark-solid.svg' },
-  folder: { line: '/icons/folder-line.svg', solid: '/icons/folder-line.svg' },
+  folder: { line: '/icons/folder-line.svg', solid: '/icons/folder-solid.svg' },
   tasks: { line: '/icons/list-box-line.svg', solid: '/icons/list-box-solid.svg' },
   notes: { line: '/icons/noteblock-text-line.svg', solid: '/icons/noteblock-text-solid.svg' },
   reminders: { line: '/icons/bell-line.svg', solid: '/icons/bell-solid.svg' },
   settings: { line: '/icons/settings-cog-line.svg', solid: '/icons/settings-cog-line.svg' },
-  sun: { line: '/icons/sun-outline.svg', solid: '/icons/sun-outline.svg' },
-  moon: { line: '/icons/moon-line.svg', solid: '/icons/moon-line.svg' },
+  layers: { line: '/icons/layers-line.svg', solid: '/icons/layers-solid.svg' },
   edit: { line: '/icons/edit-pen-2-line.svg', solid: '/icons/edit-pen-2-solid.svg' },
-
   adjustments: { line: '/icons/adjustments-horizontal.svg' },
-  palette: { line: '/icons/palette-outline.svg' },
+  palette: { line: '/icons/palette-outline.svg', solid: '/icons/palette-solid.svg' },
   weather: {line: '/icons/cloud-sun-line.svg' },
   globe: { line: '/icons/globe-grid-line.svg' },
   layout: { line: '/icons/layout-line.svg', solid: '/icons/layout-line.svg' },
@@ -74,13 +78,18 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   close: { line: '/icons/close-line.svg', solid: '/icons/close-line.svg' },
   check: { line: '/icons/check-line.svg', solid: '/icons/check-line.svg' },
   drag: { line: '/icons/drag-line.svg', solid: '/icons/drag-line.svg' },
-  search: { line: '/icons/search-line.svg', solid: '/icons/search-line.svg' },
+  search: { line: '/icons/search-line.svg', solid: '/icons/search-solid.svg' },
   download: { line: '/icons/download-line.svg', solid: '/icons/download-line.svg' },
   upload: { line: '/icons/upload-line.svg', solid: '/icons/upload-line.svg' },
   alert: { line: '/icons/alert-line.svg', solid: '/icons/alert-line.svg' },
   'external-link': { line: '/icons/external-link-line.svg', solid: '/icons/external-link-line.svg' },
-  delete: {line: '/icons/delete-bin-line.svg'},
-  cloud: {line: '/icons/cloud-line.svg'}
+  delete: { line: '/icons/delete-bin-line.svg' },
+  cloud: { line: '/icons/cloud-line.svg' },
+  code: { line: '/icons/code.svg', solid: '/icons/code.svg' },
+  clock: { line: '/icons/clock.svg', solid: '/icons/clock.svg' },
+  beach: { line: '/icons/beach.svg', solid: '/icons/beach.svg' },
+  play: { line: '/icons/play-circle.svg', solid: '/icons/play-circle.svg' },
+  book: { line: '/icons/book-open.svg', solid: '/icons/book-open.svg' },
 };
 
 const Icon: React.FC<IconProps> = ({ name, variant = 'line', size = 20, color = 'currentColor', className = '' }) => {

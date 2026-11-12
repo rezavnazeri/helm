@@ -38,7 +38,7 @@ const DataSettings: React.FC = () => {
       if (!parsed || typeof parsed !== 'object') throw new Error('invalid');
 
       const record = parsed as Record<string, unknown>;
-      const allowed = ['settings', 'bookmarkSpace', 'quickAccessShortcuts', 'todos', 'notes', 'reminders'];
+      const allowed = ['settings', 'bookmarkSpace', 'sessionSpace', 'quickAccessShortcuts', 'todos', 'notes'];
       const payload = Object.fromEntries(
         allowed.filter((key) => key in record).map((key) => [key, record[key]]),
       );
@@ -87,7 +87,7 @@ const DataSettings: React.FC = () => {
         </button>
       </div>
 
-      <div className="danger-zone">
+      <div className="data-block">
         <h4>{t('data.resetTitle')}</h4>
         <p>{t('data.resetDescription')}</p>
         <button type="button" className="danger-button" onClick={() => void reset()}>

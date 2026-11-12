@@ -33,7 +33,7 @@
   text-align: center;
 }
 
-.add-folder-tree {
+.dialog-tree {
   flex: 1 1 auto;
   height: 300px;
   padding: 4px;
@@ -47,10 +47,11 @@
   }
 }
 
-.add-folder-row {
+.tree-row {
   display: flex;
   align-items: center;
   gap: 2px;
+  padding-inline-start: 6px;
   border-radius: 8px;
   transition: background 0.15s ease;
 
@@ -68,8 +69,8 @@
   }
 }
 
-.add-folder-toggle,
-.add-folder-toggle-spacer {
+.tree-toggle,
+.tree-toggle-spacer {
   display: grid;
   flex: 0 0 auto;
   place-items: center;
@@ -78,7 +79,7 @@
   color: var(--muted);
 }
 
-.add-folder-toggle {
+.tree-toggle {
   border-radius: 6px;
 
   &:hover {
@@ -94,11 +95,11 @@
   }
 }
 
-[dir='rtl'] .add-folder-toggle.is-collapsed .icon-wrapper {
+[dir='rtl'] .tree-toggle.is-collapsed .icon-wrapper {
   transform: rotate(90deg);
 }
 
-.add-folder-select {
+.tree-select {
   display: flex;
   flex: 1 1 auto;
   align-items: center;
@@ -115,7 +116,7 @@
   }
 }
 
-.add-folder-name {
+.tree-name {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -123,7 +124,7 @@
   text-overflow: ellipsis;
 }
 
-.add-folder-meta {
+.tree-meta {
   flex: 0 0 auto;
   font-size: 12px;
   color: var(--muted);
@@ -141,13 +142,13 @@
   color: var(--muted);
 }
 
-.add-folder-icons {
+.icon-picker {
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
   gap: 4px;
 }
 
-.add-folder-icon {
+.icon-picker-item {
   display: grid;
   place-items: center;
   width: 100%;
@@ -175,4 +176,124 @@
   justify-content: flex-end;
   gap: 8px;
   margin-top: 20px;
+}
+
+// Session dialog ---------------------------------------------------------------
+
+.add-dialog-field--first {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 0 6px 0 12px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--glass);
+  color: var(--muted);
+
+  &:focus-within {
+    border-color: var(--theme-strong);
+  }
+
+  input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+}
+
+.search-clear {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  color: var(--muted);
+
+  &:hover {
+    background: var(--button-hover-bg);
+    color: var(--text);
+  }
+}
+
+[dir='rtl'] .search-box {
+  padding: 0 12px 0 6px;
+}
+
+.tree-row--all {
+  border-bottom: 1px solid var(--border);
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 2px;
+}
+
+.tree-check {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--muted);
+  border-radius: 6px;
+  color: var(--text);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &.is-all,
+  &.is-some {
+    border-color: var(--theme-strong);
+    background: var(--button-hover-bg);
+  }
+}
+
+.tree-check-dash {
+  width: 8px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.tree-favicon {
+  display: block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  object-fit: contain;
+}
+
+.tree-favicon.favicon-fallback {
+  display: grid;
+}
+
+.tree-group-dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+
+  &[data-color='blue'] { background: #4f8df5; }
+  &[data-color='cyan'] { background: #2bbdd6; }
+  &[data-color='green'] { background: #3fb871; }
+  &[data-color='yellow'] { background: #f2c230; }
+  &[data-color='orange'] { background: #f0883e; }
+  &[data-color='red'] { background: #ec5b5b; }
+  &[data-color='pink'] { background: #e870a8; }
+  &[data-color='purple'] { background: #9a6fe0; }
 }

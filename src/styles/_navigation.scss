@@ -3,6 +3,7 @@
 
 .side-nav {
   @include glass;
+  z-index: 40;
 
   width: 64px;
   height: 100%;
@@ -338,4 +339,152 @@
     writing-mode: vertical-lr;
     transform: rotate(180deg);
   }
+}
+
+/* Expandable add menu */
+.add-menu-anchor {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  z-index: 8;
+}
+
+.add-menu-trigger .icon-wrapper {
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.2s ease;
+}
+
+.add-menu-trigger.is-open .icon-wrapper {
+  transform: rotate(45deg);
+}
+
+.add-menu {
+  position: absolute;
+  z-index: 30;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.24s ease, transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.32s;
+}
+
+.add-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(0, 0);
+  transition-delay: 0s;
+}
+
+.add-menu--left {
+  bottom: calc(100% + 16px);
+  right: 4px;
+  flex-direction: column;
+}
+
+.add-menu--right {
+  bottom: calc(100% + 16px);
+  right: 4px;
+  flex-direction: column;
+}
+
+.add-menu--top {
+  right: calc(100% + 16px);
+  top: 4px;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.add-menu--bottom {
+  right: calc(100% + 16px);
+  top: 4px;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.add-menu.is-fade {
+  transform: none;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+
+.add-menu.is-fade.is-open {
+  transform: none;
+}
+
+.add-menu-option {
+  @include glass;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    @include glass-button;
+    border-radius: 8px; 
+    z-index: 40;
+  }
+
+  &:focus-visible {
+    z-index: 40;
+  }
+}
+
+.add-menu-option[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 40;
+  width: max-content;
+  max-width: 180px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: var(--glass-strong);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.add-menu-option[data-tooltip]:hover::after,
+.add-menu-option[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.add-menu--left .add-menu-option::after {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.add-menu--right .add-menu-option::after {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.add-menu--top .add-menu-option::after {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.add-menu--bottom .add-menu-option::after {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.add-menu-anchor--floating .add-menu--left {
+  left: 4px;
+}
+.add-menu-anchor--floating .add-menu--right {
+  right: 4px;
 }

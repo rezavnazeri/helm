@@ -26,8 +26,12 @@ const AboutSettings: React.FC = () => {
           {t('about.github')}
           <Icon name="external-link" size={14} />
         </a>
-        <a href="#licenses">{t('about.licenses')}</a>
-        <a href="#privacy">{t('about.privacy')}</a>
+        <a href="https://github.com/rezavnazeri/helm/blob/main/LICENSE" target="_blank" rel="noreferrer">
+          {t('about.licenses')}
+        </a>
+        <a href="https://github.com/rezavnazeri/helm#privacy" target="_blank" rel="noreferrer">
+          {t('about.privacy')}
+        </a>
       </div>
     </div>
   );

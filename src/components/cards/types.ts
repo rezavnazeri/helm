@@ -1,31 +1,20 @@
-import type { DragEvent, MouseEvent } from 'react';
-import type { BookmarkNode } from '@/types/bookmarks';
-
-export type OpenDisposition = 'current' | 'tab' | 'background-tab' | 'window';
+import type { MouseEvent } from 'react';
 
 export interface MenuRequest {
+  /** `${kind}:${id}`; matches the data-menu-owner of the button that opens it. */
   key: string;
-  kind: 'folder' | 'bookmark';
+  kind: 'card' | 'row';
   id: string;
   x: number;
   y: number;
   alignEnd: boolean;
+  /** Pressing the same trigger again closes the menu. */
   toggle: boolean;
-}
-
-export interface FolderActions {
-  toggle: (id: string) => void;
-  openMenu: (request: MenuRequest) => void;
-  startRename: (id: string) => void;
-  commitRename: (id: string, title: string) => void;
-  cancelRename: (id: string) => void;
-  openBookmark: (node: BookmarkNode, disposition: OpenDisposition) => void;
-  startDrag: (event: DragEvent<HTMLElement>, id: string, card: HTMLElement | null) => void;
-  endDrag: () => void;
 }
 
 const isRtl = (): boolean => document.documentElement.dir === 'rtl';
 
+/** Menu opened with a "more options" button: anchored below the button. */
 export const menuRequestFromButton = (
   button: Element,
   kind: MenuRequest['kind'],
@@ -45,6 +34,7 @@ export const menuRequestFromButton = (
   };
 };
 
+/** Menu opened with a right click (or the keyboard's context-menu key). */
 export const menuRequestFromContextEvent = (
   event: MouseEvent<HTMLElement>,
   kind: MenuRequest['kind'],

@@ -6,17 +6,20 @@ import { useSettings } from './context/useSettings';
 import { useSwipe } from './hooks/useSwipe';
 import { useWallpaper } from './hooks/useWallpaper';
 import { Space } from './types/models';
-import { SECTIONS } from './constants/sections';
 import { SIDE_NAV_FLEX_DIRECTION } from './constants/settings';
 
 import SideNav from './components/SideNav';
 import Header from './components/Header';
 import Home from './spaces/Home';
 import Bookmarks from './spaces/Bookmarks';
+import Sessions from './spaces/Sessions';
 import SettingsDialog from './components/settings/SettingsDialog';
-import AddDialog from './components/AddDialog';
+import AddBookmarkDialog from './components/bookmarks/AddBookmarkDialog';
+import AddSessionDialog from './components/sessions/AddSessionDialog';
 import SpaceViewport from './components/SpaceViewport';
 import QuickAccess from './components/QuickAccess';
+import AddMenu, { type AddMenuOption } from './components/AddMenu';
+import { SECTION_ICONS, SECTIONS } from './constants/sections';
 
 import '@fontsource-variable/hanken-grotesk';
 import './styles/index.scss';
@@ -41,6 +44,11 @@ const writeLastSpace = (space: Space) => {
   }
 };
 
+type AddDialogState =
+  | { kind: 'bookmark' }
+  | { kind: 'session'; sessionId?: string }
+  | null;
+
 const MainApp: React.FC = () => {
   const { settings } = useSettings();
   const { t, dir } = useI18n();
@@ -49,18 +57,27 @@ const MainApp: React.FC = () => {
     () => (settings.rememberLastSpace ? readLastSpace() : undefined) ?? 'home',
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [addOpen, setAddOpen] = useState(false);
+  const [addDialog, setAddDialog] = useState<AddDialogState>(null);
+  const addOpen = addDialog !== null;
 
   const handleOpenSettings = useCallback(() => {
     setSettingsOpen(true);
   }, []);
 
-  const handleOpenAdd = useCallback(() => {
-    setAddOpen(true);
+  const handleOpenAddBookmark = useCallback(() => {
+    setAddDialog({ kind: 'bookmark' });
+  }, []);
+
+  const handleOpenAddSession = useCallback(() => {
+    setAddDialog({ kind: 'session' });
+  }, []);
+
+  const handleOpenAddTabs = useCallback((sessionId: string) => {
+    setAddDialog({ kind: 'session', sessionId });
   }, []);
 
   const handleCloseAdd = useCallback(() => {
-    setAddOpen(false);
+    setAddDialog(null);
   }, []);
 
   const settingsButtonSide =
@@ -165,11 +182,32 @@ const MainApp: React.FC = () => {
     setActiveSpace(space);
   }, []);
 
-  const handleFolderAdded = useCallback(() => {
-    if (visibleSections.includes('bookmarks')) {
-      setActiveSpace('bookmarks');
-    }
-  }, [visibleSections]);
+  // Show the space that just received something new.
+  const showSpace = useCallback(
+    (space: Space) => {
+      if (visibleSections.includes(space)) setActiveSpace(space);
+    },
+    [visibleSections],
+  );
+
+  const handleFolderAdded = useCallback(() => showSpace('bookmarks'), [showSpace]);
+  const handleSessionSaved = useCallback(() => showSpace('sessions'), [showSpace]);
+
+  // Everything the "+" menu can add. Spaces that gain adding contribute an entry here.
+  const addOptions: AddMenuOption[] = [
+    {
+      id: 'bookmark',
+      icon: SECTION_ICONS.bookmarks,
+      label: t('navigation.newBookmark'),
+      onSelect: handleOpenAddBookmark,
+    },
+    {
+      id: 'session',
+      icon: SECTION_ICONS.sessions,
+      label: t('navigation.newSession'),
+      onSelect: handleOpenAddSession,
+    },
+  ];
 
   const renderSpace = () => {
     switch (safeActiveSpace) {
@@ -177,7 +215,10 @@ const MainApp: React.FC = () => {
         return <Home />;
 
       case 'bookmarks':
-        return <Bookmarks onAddFolder={handleOpenAdd} />;
+        return <Bookmarks onAddFolder={handleOpenAddBookmark} />;
+
+      case 'sessions':
+        return <Sessions onAddSession={handleOpenAddSession} onAddTabs={handleOpenAddTabs} />;
 
       default:
         return (
@@ -203,7 +244,7 @@ const MainApp: React.FC = () => {
       activeSpace={safeActiveSpace}
       onSpaceChange={handleSpaceChange}
       onOpenSettings={handleOpenSettings}
-      onOpenAdd={handleOpenAdd}
+      addOptions={addOptions}
     />
   );
 
@@ -216,14 +257,7 @@ const MainApp: React.FC = () => {
 
       {!settings.sideNavEnabled && (
         <div className={`floating-utilities ${settingsButtonSide}`}>
-          <button
-            type="button"
-            className="floating-utility"
-            aria-label={t('navigation.add')}
-            onClick={handleOpenAdd}
-          >
-            <Icon name="plus" size={20} />
-          </button>
+          <AddMenu position={settingsButtonSide} options={addOptions} floating />
 
           <button
             type="button"
@@ -282,10 +316,17 @@ const MainApp: React.FC = () => {
         onClose={() => setSettingsOpen(false)}
       />
 
-      <AddDialog
-        isOpen={addOpen}
+      <AddBookmarkDialog
+        isOpen={addDialog?.kind === 'bookmark'}
         onClose={handleCloseAdd}
         onFolderAdded={handleFolderAdded}
+      />
+
+      <AddSessionDialog
+        isOpen={addDialog?.kind === 'session'}
+        sessionId={addDialog?.kind === 'session' ? addDialog.sessionId : undefined}
+        onClose={handleCloseAdd}
+        onSaved={handleSessionSaved}
       />
     </div>
   );

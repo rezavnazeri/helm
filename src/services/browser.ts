@@ -13,7 +13,17 @@ export const isOpenableUrl = (url: string | undefined): url is string =>
 const openableUrls = (urls: Array<string | undefined>): string[] =>
   urls.filter(isOpenableUrl);
 
+export type OpenDisposition = 'current' | 'tab' | 'background-tab' | 'window';
+
 export const BrowserService = {
+  /** Opens one link the way the user asked for. */
+  open: (url: string, disposition: OpenDisposition): Promise<void> => {
+    if (disposition === 'tab') return BrowserService.openInNewTab(url, true);
+    if (disposition === 'background-tab') return BrowserService.openInNewTab(url, false);
+    if (disposition === 'window') return BrowserService.openInNewWindow([url]);
+    return BrowserService.openInCurrentTab(url);
+  },
+
   /** Replaces the current (Helm) tab. */
   openInCurrentTab: async (url: string): Promise<void> => {
     if (!isOpenableUrl(url)) return;
@@ -119,5 +129,42 @@ export const BrowserService = {
     } else {
       await chrome.tabs.update({ url: first });
     }
+  },
+
+  /**
+   * Opens every URL as new tabs next to the current one and puts them in one
+   * tab group named `title`. The first tab is activated.
+   */
+  openAsGroup: async (urls: Array<string | undefined>, title: string): Promise<void> => {
+    const list = openableUrls(urls);
+    if (list.length === 0) return;
+
+    if (!hasTabsApi() || !chrome.tabGroups) {
+      await BrowserService.openAllInNewTabs(list);
+      return;
+    }
+
+    const current = await chrome.tabs.getCurrent();
+    const baseIndex = current ? current.index + 1 : undefined;
+    const tabIds: number[] = [];
+
+    for (const [offset, url] of list.entries()) {
+      const tab = await chrome.tabs.create({
+        url,
+        active: false,
+        index: baseIndex === undefined ? undefined : baseIndex + offset,
+        windowId: current?.windowId,
+      });
+      if (tab.id !== undefined) tabIds.push(tab.id);
+    }
+
+    if (tabIds.length === 0) return;
+
+    const groupId = await chrome.tabs.group({
+      tabIds: tabIds as [number, ...number[]],
+      createProperties: current ? { windowId: current.windowId } : undefined,
+    });
+    await chrome.tabGroups.update(groupId, { title: title.trim() });
+    await chrome.tabs.update(tabIds[0], { active: true });
   },
 };

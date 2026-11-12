@@ -1,128 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Favicon from '@/components/Favicon';
 import Icon from '@/components/Icon';
-import { useI18n } from '@/i18n/useI18n';
-import type { BookmarkNode } from '@/types/bookmarks';
-import { bookmarkFaviconUrl, shortAddress } from '@/utils/bookmarkTree';
-import InlineRename from './InlineRename';
-import {
-  menuRequestFromButton,
-  menuRequestFromContextEvent,
-  type FolderActions,
-  type OpenDisposition,
-} from './types';
+import InlineRename from '@/components/InlineRename';
+import { rowHandlers } from '@/components/cards/rowHandlers';
+import type { MenuRequest } from '@/components/cards/types';
+import type { OpenDisposition } from '@/services/browser';
+import { shortAddress } from '@/utils/links';
 
 interface BookmarkRowProps {
-  node: BookmarkNode;
+  id: string;
+  title: string;
+  url: string;
+  canRename: boolean;
   renaming: boolean;
-  canModify: boolean;
-  actions: FolderActions;
+  optionsLabel: string;
+  renameLabel: string;
+  onOpen: (disposition: OpenDisposition) => void;
+  onOpenMenu: (request: MenuRequest) => void;
+  onStartRename: () => void;
+  onCommitRename: (title: string) => void;
+  onCancelRename: () => void;
 }
 
-const BookmarkFavicon: React.FC<{ url: string }> = ({ url }) => {
-  const [broken, setBroken] = useState(false);
-
-  if (broken) {
-    return (
-      <span className="bm-favicon bm-favicon--fallback">
-        <Icon name="globe" size={16} />
-      </span>
-    );
-  }
-
-  return (
-    <img
-      className="bm-favicon"
-      src={bookmarkFaviconUrl(url)}
-      alt=""
-      loading="lazy"
-      draggable={false}
-      onError={() => setBroken(true)}
-    />
-  );
-};
-
-const dispositionFor = (event: React.MouseEvent): OpenDisposition => {
-  const modifier = event.ctrlKey || event.metaKey;
-
-  if (modifier && event.shiftKey) return 'tab';
-  if (modifier) return 'background-tab';
-  if (event.shiftKey) return 'window';
-  return 'current';
-};
-
+/** A bookmark: favicon, name, short address and an options button. */
 const BookmarkRow: React.FC<BookmarkRowProps> = ({
-  node,
+  id,
+  title,
+  url,
+  canRename,
   renaming,
-  canModify,
-  actions,
+  optionsLabel,
+  renameLabel,
+  onOpen,
+  onOpenMenu,
+  onStartRename,
+  onCommitRename,
+  onCancelRename,
 }) => {
-  const { t } = useI18n();
-  const url = node.url ?? '';
   const address = shortAddress(url);
-  const title = node.title.trim() || address;
+  const name = title.trim() || address;
+  const handlers = rowHandlers({ id, renaming, canRename, onOpen, onOpenMenu, onStartRename });
 
   return (
     <div
-      className={`bm-row${renaming ? ' is-renaming' : ''}`}
-      tabIndex={renaming ? -1 : 0}
-      title={renaming ? undefined : `${title}\n${url}`}
-      onClick={(event) => {
-        if (renaming) return;
-        actions.openBookmark(node, dispositionFor(event));
-      }}
-      onMouseDown={(event) => {
-        if (event.button === 1) event.preventDefault();
-      }}
-      onAuxClick={(event) => {
-        if (renaming || event.button !== 1) return;
-        event.preventDefault();
-        actions.openBookmark(node, 'background-tab');
-      }}
-      onContextMenu={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        actions.openMenu(menuRequestFromContextEvent(event, 'bookmark', node.id));
-      }}
-      onKeyDown={(event) => {
-        if (event.target !== event.currentTarget) return;
-
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          actions.openBookmark(node, 'current');
-        } else if (event.key === 'F2' && canModify) {
-          event.preventDefault();
-          actions.startRename(node.id);
-        }
-      }}
+      className={`bookmark-row${renaming ? ' is-renaming' : ''}`}
+      title={renaming ? undefined : `${name}\n${url}`}
+      {...handlers.row}
     >
-      <BookmarkFavicon key={url} url={url} />
+      <Favicon key={url} url={url} className="bookmark-favicon" />
 
-      <div className="bm-info">
+      <div className="bookmark-info">
         {renaming ? (
           <InlineRename
-            className="bm-title"
-            value={node.title}
-            label={t('bookmarks.renameBookmark')}
-            onCommit={(next) => actions.commitRename(node.id, next)}
-            onCancel={() => actions.cancelRename(node.id)}
+            className="bookmark-title"
+            value={title}
+            label={renameLabel}
+            onCommit={onCommitRename}
+            onCancel={onCancelRename}
           />
         ) : (
-          <span className="bm-title">{title}</span>
+          <span className="bookmark-title">{name}</span>
         )}
-        <span className="bm-address">{address}</span>
+        <span className="bookmark-address">{address}</span>
       </div>
 
       <button
         type="button"
-        className="bm-icon-button bm-options"
-        data-menu-owner={`bookmark:${node.id}`}
-        aria-label={t('bookmarks.bookmarkOptions')}
-        aria-haspopup="menu"
-        onClick={(event) => {
-          event.stopPropagation();
-          actions.openMenu(menuRequestFromButton(event.currentTarget, 'bookmark', node.id));
-        }}
-        onDoubleClick={(event) => event.stopPropagation()}
+        className="card-icon-button bookmark-options"
+        aria-label={optionsLabel}
+        {...handlers.options}
       >
         <Icon name="more-menu" size={20} />
       </button>

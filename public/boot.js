@@ -1,10 +1,7 @@
 (() => {
   const BOOTSTRAP_KEY = 'helm-bootstrap-settings';
   const wallpaperMap = {
-    default: '/wallpapers/dark.jpg',
-    light: '/wallpapers/light.jpg',
-    'desert-night': '/wallpapers/dune-dark.jpg',
-    'desert-day': '/wallpapers/dune-light.jpg',
+    default: '/wallpapers/default.webp'
   };
 
   const root = document.documentElement;

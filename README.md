@@ -1,113 +1,76 @@
 # Helm
 
-Helm is a calm, wallpaper-first new tab environment for Chrome. It provides a customizable visual starting point with quick-access shortcuts, personalization, weather, and lightweight browser utilities.
+Helm is a calm, wallpaper-first new tab environment for Chrome. It turns your blank new tab into a customizable workspace with quick access to your favorite websites, bookmarks, saved sessions, weather, and more.
 
-Helm is designed around a simple idea: **your new tab should be a useful workspace, not just a blank page.**
+**Your new tab should be a useful workspace, not just a blank page.**
 
 ## Screenshots
 
-<img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_06_50 PM" src="https://github.com/user-attachments/assets/00efd8c1-bf6a-4aae-a6f8-6af7ca7e9a0c" />
-<img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_07_56 PM" src="https://github.com/user-attachments/assets/68cf2a00-3a12-415a-b6a9-496bf5ec2b71" />
-<img width="1919" height="905" alt="Screenshot 2026-10-30 183436" src="https://github.com/user-attachments/assets/92f62e1d-fede-48df-83eb-dc980c4eab36" />
-<img width="1920" height="911" alt="Helm - Google Chrome 18-Sep-26 8_07_27 PM" src="https://github.com/user-attachments/assets/efb3b575-6be5-4671-988e-aa91ceef2f30" />
+<img width="1920" height="911" alt="Helm" src="https://github.com/user-attachments/assets/00efd8c1-bf6a-4aae-a6f8-6af7ca7e9a0c" />
+<img width="1920" height="911" alt="Helm" src="https://github.com/user-attachments/assets/68cf2a00-3a12-415a-b6a9-496bf5ec2b71" />
+<img width="1919" height="905" alt="Helm" src="https://github.com/user-attachments/assets/92f62e1d-fede-48df-83eb-dc980c4eab36" />
+<img width="1920" height="911" alt="Helm" src="https://github.com/user-attachments/assets/efb3b575-6be5-4671-988e-aa91ceef2f30" />
 
 ## Features
 
-### Currently Implemented
+### Customizable New Tab
 
-* Wallpaper-first new tab experience
-* Built-in and custom wallpapers
-* Light, dark, and automatic themes
-* Adjustable wallpaper dimming
-* Quick Access shortcuts with favicon buttons
-* Cached Quick Access favicons, so new tabs do not re-download icons
-* Drag-and-drop Quick Access reordering
-* Scrollable spaces
-* Weather with location search
-* Celsius and Fahrenheit support
-* English and Persian localization
-* RTL support for Persian
-* Repositionable SideNav and Quick Access
-* Local application storage with no required account or backend
-* Export and import of Chrome storage data
+- Built-in and custom wallpapers
+- Light, dark, and automatic themes
+- Adjustable wallpaper dimming
+- Customizable Quick Access shortcuts with drag-and-drop reordering
+- Flexible, repositionable SideNav and Quick Access
+- Responsive, customizable spaces and cards
 
 ### Bookmarks
 
-The Bookmarks space is a curated view of selected folders from your Chrome bookmark tree — not a copy of your bookmarks. Folders and their contents always come from Chrome, so changes made in Chrome's own bookmark manager appear in Helm immediately.
+A curated view of your Chrome bookmark folders, seamlessly integrated with your existing bookmarks.
 
-* Display selected folders from your Chrome bookmark tree
-* Add folders to the space and remove them from it without modifying Chrome
-* Expand and collapse folders
-* Drag-and-drop folders into any cell of a responsive multi-column grid
-* Manual layout with intentional empty cells, preserved across window resizing
-* Inline rename for folders and bookmarks
-* Open bookmarks in the current tab, a new tab, a background tab, or a new window
-* Open an entire folder at once — in the current tab, in new tabs, or in a new window
-* Context menus for folders and bookmarks, with full keyboard navigation
-* Delete bookmarks from Chrome directly from Helm
-* Native Chrome favicons via the `favicon` permission, so bookmark icons are not downloaded
-* Layout stored locally and kept in sync with Chrome across all Helm tabs
+- Add and organize selected Chrome bookmark folders
+- Expand, collapse, and rearrange folders
+- Rename and manage bookmarks directly from Helm
+- Open individual bookmarks or entire folders in different ways
+- Changes stay synchronized with Chrome's bookmark manager
 
-### Planned
+### Sessions
 
-#### Sessions
+Save tabs for later without adding them to your bookmarks.
 
-A temporary workspace for unfinished browser work.
+- Save open tabs and entire tab groups as sessions
+- Search and select individual tabs or entire groups
+- Add tabs to existing sessions
+- Restore individual tabs or entire sessions
+- Open sessions in new tabs, windows, or tab groups
+- Rename, organize, and remove saved tabs
 
-* Park individual tabs without losing them
-* Park multiple tabs as a session
-* Close parked tabs to remove them from the active browser window
-* Restore sessions when you're ready to continue
-* Preserve tab titles, URLs, favicons, and session metadata
-* Manage and delete old sessions
-* Optional session expiration and cleanup
+### Other Features
 
-Sessions are intended to solve a specific problem: **keeping tabs open simply because you aren't finished with them yet.**
+- Weather with location search
+- English and Persian localization with RTL support
+- Local data storage and backup import/export
 
-#### Workspaces
+## Roadmap
 
-Organize browser activity around projects and contexts rather than individual tabs.
+Helm is actively evolving. The following features are planned for future releases:
 
-* Create project-based workspaces
-* Associate sessions and browser activity with a workspace
-* Quickly switch between different contexts
-* Resume previous work without rebuilding your browser environment
+**Workspaces**
+- Organize browsing around projects and contexts
+- Associate sessions and browser activity with workspaces
+- Quickly switch between different workspaces
 
-#### Saved Bookmarks
-
-Extending the Bookmarks space beyond Chrome's bookmark tree.
-
-* Bookmark previews and metadata
-* Creating and editing individual bookmarks from inside Helm
-
-#### Tasks, Notes & Reminders
-
-Lightweight productivity tools built around browser activity rather than a full productivity suite.
-
-* Simple tasks
-* Contextual notes
-* Reminders associated with browser work
-* Quick capture from the new tab page
-
-#### Browser Utilities
-
-Additional tools intended to make Helm a useful browser workspace.
-
-* Improved search across active and parked browser content
-* Tab and session cleanup tools
-* Duplicate tab detection
-* Recently used and recently parked work
-* Focus-oriented browsing features
-
-> Planned features are subject to change as Helm evolves and user feedback is collected.
+**Productivity**
+- Lightweight task management
+- Contextual notes
+- Reminders associated with browser activity
+- Quick capture from the new tab page
 
 ## Tech Stack
 
-* React
-* TypeScript
-* Vite
-* SCSS
-* Chrome Extension Manifest V3
+- React
+- TypeScript
+- Vite
+- SCSS
+- Chrome Extension Manifest V3
 
 ## Development
 
@@ -117,7 +80,7 @@ Install dependencies:
 npm install
 ```
 
-Run the Vite development server:
+Start the development server:
 
 ```bash
 npm run dev
@@ -135,43 +98,35 @@ Build the extension:
 npm run build
 ```
 
-### Load Helm in Chrome
+### Install in Chrome
 
 1. Run `npm run build`.
 2. Open `chrome://extensions`.
 3. Enable **Developer mode**.
-4. Select **Load unpacked**.
-5. Choose the generated `dist` directory.
-6. Open a new tab to use Helm.
-
-## Project Structure
-
-* `src/components` — reusable UI and settings components
-* `src/services` — Chrome storage, bookmarks, weather, wallpapers, and Quick Access logic
-* `src/context` — application settings and shared state
-* `src/i18n` — localized UI strings
-* `src/spaces` — individual Helm spaces
-* `src/styles` — SCSS design system and component styles
-* `public/icons` — local SVG icons
-* `public/wallpapers` — bundled wallpapers
-* `public/boot.js` — startup bootstrap for reducing visual startup delay
+4. Click **Load unpacked**.
+5. Select the generated `dist` directory.
 
 ## Privacy
 
-Helm does not require an account or a backend. Application data is stored locally in Chrome storage and IndexedDB.
+Helm does not require an account or backend. Application data is stored locally using Chrome storage and IndexedDB.
 
-Weather requests use Open-Meteo when weather features are used. Quick Access favicons are downloaded once from Google's favicon service and then kept in local storage; they are refreshed in the background after 30 days.
+- **Bookmarks:** Helm accesses your Chrome bookmarks directly. It stores only the folders you've selected for display and their layout preferences.
+- **Sessions:** Saved session information, including tab titles and URLs, is stored locally in Chrome storage.
+- **Wallpapers:** Custom wallpapers are stored locally in IndexedDB.
+- **Weather:** Weather data is retrieved from Open-Meteo when the feature is used.
+- **Quick Access:** Favicons are retrieved from Google's favicon service and cached locally.
 
-The Bookmarks space reads and edits your Chrome bookmarks directly. Helm stores only which folders are displayed, their icon, their position and whether they are collapsed. Bookmark favicons come from Chrome's own favicon store (the `favicon` permission) and are not downloaded.
+Custom wallpapers are not currently included in JSON backups.
 
-Custom wallpapers are currently stored in IndexedDB and are not included in the JSON backup.
+## License
 
-Before publishing a production build, review the permissions and external hosts declared in `public/manifest.json`.
+Helm is licensed under the MIT License.
+See [LICENSE](LICENSE) for details.
 
 ## Status
 
-Helm is an active personal project and is currently under development.
+Helm is an open-source project under active development.
 
-The current release focuses on the new tab experience, personalization, Quick Access, the Bookmarks space, weather, localization, and local data management. Sessions, workspaces, and lightweight productivity features are planned for future releases.
+The current release includes the customizable new tab experience, Quick Access, Bookmarks, Sessions, weather, and local data management. More spaces and productivity features are planned for future releases.
 
-APIs, UI details, and planned features may change as development continues.
+Features and APIs may change as development continues.

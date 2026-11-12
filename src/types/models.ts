@@ -1,4 +1,4 @@
-export type Space = 'home' | 'bookmarks' | 'tasks' | 'notes' | 'reminders';
+export type Space = 'home' | 'bookmarks' | 'sessions' | 'tasks' | 'notes';
 
 export type SettingsGroup =
   | 'general'

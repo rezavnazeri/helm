@@ -4,12 +4,13 @@ import { SECTIONS, SECTION_LABELS, SECTION_ICONS } from '@/constants/sections';
 import { useI18n } from '@/i18n/useI18n';
 import { useSettings } from '@/context/useSettings';
 import Icon from './Icon';
+import AddMenu, { type AddMenuOption } from './AddMenu';
 
 interface SideNavProps {
   activeSpace: Space;
   onSpaceChange: (space: Space) => void;
   onOpenSettings: () => void;
-  onOpenAdd: () => void;
+  addOptions: AddMenuOption[];
 }
 
 interface IndicatorStyle {
@@ -24,7 +25,7 @@ const SideNav: React.FC<SideNavProps> = ({
   activeSpace,
   onSpaceChange,
   onOpenSettings,
-  onOpenAdd,
+  addOptions,
 }) => {
   const { t } = useI18n();
   const { settings } = useSettings();
@@ -154,14 +155,7 @@ const SideNav: React.FC<SideNavProps> = ({
         </div>
 
       <div className="nav-bottom">
-        <button
-          type="button"
-          className="nav-utility"
-          aria-label={t('navigation.add')}
-          onClick={onOpenAdd}
-        >
-          <Icon name="plus" variant="line" size={20} />
-        </button>
+        <AddMenu position={settings.sideNavPosition} options={addOptions} />
 
         <button
           type="button"
