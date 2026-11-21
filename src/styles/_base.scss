@@ -9,12 +9,32 @@
 html,
 body {
   height: 100%;
+  // A horizontal swipe must not trigger the browser's back/forward navigation.
+  overscroll-behavior-x: none;
   overflow: hidden;
   font-family: var(--font-family);
-  background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   transition: var(--theme-transition);
+}
+
+// Wallpaper and its dimming are painted by <html> itself, so they show up with the
+// first frame instead of waiting for the app to mount. The dim is the top layer.
+html {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(
+      rgba(0, 0, 0, var(--wallpaper-dim-alpha, 0.3)),
+      rgba(0, 0, 0, var(--wallpaper-dim-alpha, 0.3))
+    ),
+    var(--wallpaper-url, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body {
+  background: transparent;
 }
 
 #root {
@@ -45,7 +65,7 @@ button {
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
   border-radius: 4px;
-  
+
   &:hover {
     background: var(--scrollbar-thumb-hover);
   }
@@ -57,5 +77,5 @@ button {
 }
 
 html[lang="fa"], html[lang="fa"] body, html[lang="fa"] button, html[lang="fa"] input, html[lang="fa"] select, html[lang="fa"] textarea {
-  font-family: "Vazirmatn", Tahoma, sans-serif;
+  font-family: "Vazirmatn Variable", Tahoma, sans-serif;
 }

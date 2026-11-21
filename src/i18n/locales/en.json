@@ -26,19 +26,6 @@
     "openAllNewWindow": "Open all in a new window",
     "rename": "Rename",
     "delete": "Delete",
-    "icons": {
-      "home": "Home",
-      "bookmark": "Bookmark",
-      "layers": "Layers",
-      "notes": "Notes",
-      "tasks": "List",
-      "folder": "Folder",
-      "code": "Code",
-      "play": "Play",
-      "palette": "Palette",
-      "search": "Search",
-      "book": "Book"
-    },
     "openAsGroup": "Open as a group"
   },
   "general": {
@@ -153,6 +140,20 @@
     "submit": "Add session",
     "submitTabs": "Add tabs",
     "unavailable": "Open tabs are not available here."
+  },
+  "notes": {
+    "defaultName": "New Note",
+    "defaultNumberedName": "New Note ({{number}})",
+    "options": "Note options",
+    "renameNote": "Rename note",
+    "textLabel": "Note text",
+    "placeholder": "Write something…",
+    "copy": "Copy",
+    "copied": "Note Copied!",
+    "delete": "Delete note",
+    "emptyTitle": "No notes yet",
+    "emptyHint": "Jot down anything you want to keep close.",
+    "addNote": "Add a note"
   },
   "app": {
     "name": "Helm"
@@ -285,7 +286,7 @@
     "invalidBackup": "Invalid backup file"
   },
   "about": {
-    "version": "Version 0.4.0",
+    "version": "Version 0.6.0",
     "description": "Helm is an open-source, local-first new-tab experience for your browser.",
     "github": "GitHub",
     "licenses": "Licenses",
@@ -303,7 +304,8 @@
     "edit": "Edit",
     "add": "Add",
     "newBookmark": "New bookmark",
-    "newSession": "New session"
+    "newSession": "New session",
+    "newNote": "New note"
   },
   "quickAccess": {
     "add": "Add shortcut",
@@ -319,7 +321,6 @@
   "addDialog": {
     "title": "Add a bookmark folder",
     "description": "Choose a folder from your Chrome bookmarks to show in Helm.",
-    "folderIcon": "Icon",
     "added": "Added",
     "noFolders": "No bookmark folders found.",
     "submit": "Add folder"

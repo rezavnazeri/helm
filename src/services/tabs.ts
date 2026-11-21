@@ -6,8 +6,7 @@ export interface OpenTab {
   id: number;
   title: string;
   url: string;
-  /** Id of the tab group, or NO_GROUP. */
-  groupId: number;
+    groupId: number;
 }
 
 export interface OpenGroup {

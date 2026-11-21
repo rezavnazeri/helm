@@ -6,7 +6,6 @@ import { getRowCount } from '@/utils/cardGrid';
 
 const DRAG_TYPE = 'application/x-helm-card';
 
-/** What a card needs from the grid to be draggable and collapsible. */
 export interface CardHost {
   isDragSource: boolean;
   toggle: () => void;
@@ -17,21 +16,12 @@ export interface CardHost {
 interface CardGridProps<Card extends CardBase> {
   store: CardStore<Card>;
   cells: Cells<Card>;
-  /** The space's data is loaded; nothing is drawn before that. */
   ready: boolean;
-  /** Cards that are no longer available (e.g. a deleted folder) are drawn as empty cells. */
   isAvailable?: (card: Card) => boolean;
-  /** Shown above the grid (empty state, error message). */
   notice?: React.ReactNode;
   renderCard: (card: Card, host: CardHost) => React.ReactNode;
 }
 
-/**
- * Layout shared by every card space: a responsive set of columns whose cells
- * hold cards, can stay empty, and can be rearranged by drag and drop. The
- * first rows are always available as drop targets; a new row appears below
- * the last one that holds a card.
- */
 function CardGrid<Card extends CardBase>({
   store,
   cells,
@@ -61,7 +51,6 @@ function CardGrid<Card extends CardBase>({
     setOverIndex(null);
   }, []);
 
-  // A drag that ends outside of any cell (or is cancelled with Escape).
   useEffect(() => {
     window.addEventListener('dragend', clearDrag);
     window.addEventListener('drop', clearDrag);
@@ -119,7 +108,6 @@ function CardGrid<Card extends CardBase>({
     }
 
     dragIdRef.current = id;
-    // Changing the layout inside dragstart cancels the drag in some browsers.
     window.setTimeout(() => {
       if (dragIdRef.current === id) setDragId(id);
     }, 0);
@@ -180,4 +168,3 @@ function CardGrid<Card extends CardBase>({
 }
 
 export default CardGrid;
-

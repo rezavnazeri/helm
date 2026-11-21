@@ -11,7 +11,6 @@ interface AddDialogShellProps {
   children: React.ReactNode;
 }
 
-/** Frame of every "add" dialog: backdrop, title, description and the two buttons. */
 const AddDialogShell: React.FC<AddDialogShellProps> = ({
   title,
   description,

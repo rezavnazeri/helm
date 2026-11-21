@@ -12,18 +12,14 @@ import {
 interface CardProps {
   id: string;
   icon: IconName;
-  /** Name as stored; shown as "Untitled" when empty. */
   title: string;
-  count: number;
+  count?: number;
   collapsed: boolean;
-  /** Whether the title can be renamed (click on the name). */
   canRename: boolean;
   renaming: boolean;
   host: CardHost;
-  /** Screen-reader labels. */
   optionsLabel: string;
   renameLabel: string;
-  /** Extra header buttons, placed before the options button. */
   extraActions?: React.ReactNode;
   onOpenMenu: (request: MenuRequest) => void;
   onStartRename: () => void;
@@ -32,10 +28,6 @@ interface CardProps {
   children: React.ReactNode;
 }
 
-/**
- * Collapsible card shared by every space: a draggable header (icon, name,
- * count, buttons) above a body that expands and collapses.
- */
 const Card: React.FC<CardProps> = ({
   id,
   icon,
@@ -57,10 +49,12 @@ const Card: React.FC<CardProps> = ({
   const { t, locale } = useI18n();
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // While the card is dragged it folds up, so the cells below move closer.
   const expanded = !collapsed && !host.isDragSource;
   const name = title.trim() || t('cards.untitled');
-  const formattedCount = new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US').format(count);
+  const formattedCount =
+    count === undefined
+      ? null
+      : new Intl.NumberFormat(locale === 'fa' ? 'fa-IR' : 'en-US').format(count);
 
   return (
     <div
@@ -112,7 +106,7 @@ const Card: React.FC<CardProps> = ({
             </span>
           )}
 
-          <span className="card-count">{formattedCount}</span>
+          {formattedCount !== null && <span className="card-count">{formattedCount}</span>}
         </div>
 
         <div className="card-header-actions">

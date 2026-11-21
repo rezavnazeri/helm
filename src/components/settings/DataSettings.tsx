@@ -38,7 +38,7 @@ const DataSettings: React.FC = () => {
       if (!parsed || typeof parsed !== 'object') throw new Error('invalid');
 
       const record = parsed as Record<string, unknown>;
-      const allowed = ['settings', 'bookmarkSpace', 'sessionSpace', 'quickAccessShortcuts', 'todos', 'notes'];
+      const allowed = ['settings', 'bookmarkSpace', 'sessionSpace', 'noteSpace', 'quickAccessShortcuts', 'todos', 'notes'];
       const payload = Object.fromEntries(
         allowed.filter((key) => key in record).map((key) => [key, record[key]]),
       );

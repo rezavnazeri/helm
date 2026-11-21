@@ -21,10 +21,6 @@ interface SessionRowProps {
   onCancelRename: () => void;
 }
 
-/**
- * A saved tab: a small favicon and the page title. The address is not shown
- * (it is in the tooltip), and the options button only appears on hover or focus.
- */
 const SessionRow: React.FC<SessionRowProps> = ({
   id,
   title,

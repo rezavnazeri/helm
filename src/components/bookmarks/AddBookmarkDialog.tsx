@@ -1,13 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import AddDialogShell from '@/components/dialog/AddDialogShell';
-import IconPicker from '@/components/dialog/IconPicker';
 import Icon from '@/components/Icon';
 import { useBookmarkTree } from '@/hooks/useBookmarkTree';
 import { useCardStore } from '@/hooks/useCardStore';
 import { useI18n } from '@/i18n/useI18n';
 import { BookmarkStore } from '@/services/bookmarkSpace';
 import type { BookmarkNode } from '@/types/bookmarks';
-import type { CardIcon } from '@/types/cards';
 import { bookmarksOf, isFolder } from '@/utils/bookmarkTree';
 
 interface AddBookmarkDialogProps {
@@ -106,7 +104,6 @@ const Content: React.FC<Omit<AddBookmarkDialogProps, 'isOpen'>> = ({
   const { cells } = useCardStore(BookmarkStore);
   const { status, tree } = useBookmarkTree();
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [icon, setIcon] = useState<CardIcon>('bookmark');
   const [busy, setBusy] = useState(false);
 
   const addedIds = useMemo(() => {
@@ -125,7 +122,7 @@ const Content: React.FC<Omit<AddBookmarkDialogProps, 'isOpen'>> = ({
     setBusy(true);
 
     try {
-      await BookmarkStore.add({ id, icon, collapsed: false });
+      await BookmarkStore.add({ id, collapsed: false });
       onFolderAdded();
       onClose();
     } catch (error) {
@@ -170,8 +167,6 @@ const Content: React.FC<Omit<AddBookmarkDialogProps, 'isOpen'>> = ({
           </ul>
         )}
       </div>
-
-      <IconPicker value={icon} onChange={setIcon} />
     </AddDialogShell>
   );
 };

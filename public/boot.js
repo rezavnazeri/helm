@@ -1,81 +1,67 @@
+// Runs before the app bundle: puts the saved theme and wallpaper on <html> so the
+// first painted frame already looks right. Everything here is synchronous except
+// the custom-wallpaper read, which runs while the bundle is still downloading.
 (() => {
   const BOOTSTRAP_KEY = 'helm-bootstrap-settings';
-  const wallpaperMap = {
-    default: '/wallpapers/default.webp'
-  };
-
+  const DEFAULT_WALLPAPER = '/wallpapers/default.webp';
   const root = document.documentElement;
-  root.classList.add('helm-boot');
 
-  const apply = (settings) => {
-    if (!settings || typeof settings !== 'object') return;
-
-    const theme =
-      settings.theme === 'light' || settings.theme === 'dark'
-        ? settings.theme
-        : settings.resolvedTheme === 'light' || settings.resolvedTheme === 'dark'
-          ? settings.resolvedTheme
-          : null;
-
-    if (theme) {
-      root.dataset.theme = theme;
-      root.style.backgroundColor = theme === 'light' ? '#f0f4f8' : '#0a0e12';
-    }
-
-    const wallpaper = settings.wallpaper;
-    if (wallpaper && wallpaper !== 'custom' && wallpaperMap[wallpaper]) {
-      root.style.setProperty(
-        '--wallpaper-url',
-        `url("${wallpaperMap[wallpaper]}")`,
-      );
-    }
-
-    const dimming = Number(settings.wallpaperDimming);
-    if (Number.isFinite(dimming)) {
-      const alpha = Math.min(100, Math.max(0, dimming)) / 100;
-      root.style.setProperty('--wallpaper-dim-alpha', String(alpha));
-    }
-  };
-
-  const finish = () => {
-    requestAnimationFrame(() => {
-      root.classList.remove('helm-boot');
-    });
-  };
-
+  let settings = null;
   try {
-    const cached = localStorage.getItem(BOOTSTRAP_KEY);
-    if (cached) apply(JSON.parse(cached));
+    settings = JSON.parse(localStorage.getItem(BOOTSTRAP_KEY));
   } catch {
-    // Startup cache is optional; React will load authoritative settings.
+    // Startup cache is optional; React loads the authoritative settings.
+  }
+  if (!settings || typeof settings !== 'object') return;
+
+  const setWallpaper = (url) => {
+    root.style.setProperty('--wallpaper-url', `url("${url.replace(/"/g, '\\"')}")`);
+  };
+
+  const theme =
+    settings.theme === 'light' || settings.theme === 'dark'
+      ? settings.theme
+      : settings.resolvedTheme === 'light' || settings.resolvedTheme === 'dark'
+        ? settings.resolvedTheme
+        : null;
+
+  if (theme) {
+    root.dataset.theme = theme;
+    root.style.backgroundColor = theme === 'light' ? '#f0f4f8' : '#0a0e12';
   }
 
-  let finished = false;
-  const complete = () => {
-    if (finished) return;
-    finished = true;
-    finish();
-  };
+  const dimming = Number(settings.wallpaperDimming);
+  if (Number.isFinite(dimming)) {
+    root.style.setProperty('--wallpaper-dim-alpha', String(Math.min(100, Math.max(0, dimming)) / 100));
+  }
 
-  // Never leave the root hidden indefinitely if the extension storage API is slow.
-  const timeout = setTimeout(complete, 1000);
-
-  if (typeof chrome !== 'undefined' && chrome.storage?.local) {
-    try {
-      chrome.storage.local.get('settings', (result) => {
-        clearTimeout(timeout);
+  if (settings.wallpaper === 'custom') {
+    // Same database as src/services/customWallpaper.ts. The app picks this result
+    // up (window.__helm) instead of reading the image a second time.
+    window.__helm = {
+      customWallpaper: new Promise((resolve) => {
         try {
-          if (result?.settings) apply(result.settings);
-        } finally {
-          complete();
+          const open = indexedDB.open('helm-wallpaper-db', 1);
+          open.onupgradeneeded = () => open.result.createObjectStore('wallpapers', { keyPath: 'id' });
+          open.onerror = () => resolve(null);
+          open.onsuccess = () => {
+            const get = open.result.transaction('wallpapers').objectStore('wallpapers').get('customWallpaper');
+            get.onerror = () => resolve(null);
+            get.onsuccess = () => {
+              const record = get.result;
+              if (!record || !record.blob) return resolve(null);
+              const url = URL.createObjectURL(record.blob);
+              setWallpaper(url);
+              resolve({ url, theme: record.DetectedTheme, revision: settings.wallpaperRevision });
+            };
+          };
+        } catch {
+          resolve(null);
         }
-      });
-    } catch {
-      clearTimeout(timeout);
-      complete();
-    }
+      }),
+    };
   } else {
-    clearTimeout(timeout);
-    complete();
+    // The app saves the resolved URL of any built-in wallpaper; old caches only knew "default".
+    setWallpaper(settings.wallpaperUrl || DEFAULT_WALLPAPER);
   }
 })();

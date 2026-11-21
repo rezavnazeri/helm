@@ -26,10 +26,8 @@ const readTabs = (value: unknown): SessionTab[] => {
   return tabs;
 };
 
-/** Sessions: saved sets of tabs. Names and tabs are stored by Helm itself. */
 export const SessionStore = createCardStore<SessionExtra>({
   storageKey: 'sessionSpace',
-  defaultIcon: 'layers',
   readExtra: (raw) => ({ name: clip(raw.name, 200), tabs: readTabs(raw.tabs) }),
 });
 

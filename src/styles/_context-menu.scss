@@ -21,7 +21,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 9px 10px;
+  padding: 10px 10px;
   border-radius: 8px;
   background: transparent;
   color: var(--text);
@@ -47,7 +47,7 @@
 }
 
 .context-menu-icon {
-  color: var(--muted);
+  color: var(--text);
 }
 
 .context-menu-item.is-danger .context-menu-icon {

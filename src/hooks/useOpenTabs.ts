@@ -10,7 +10,6 @@ interface OpenTabsState {
 
 const EMPTY: WindowTabs = { tabs: [], groups: [] };
 
-/** Reads the open tabs of the current window once, when the component mounts. */
 export const useOpenTabs = (): OpenTabsState => {
   const [state, setState] = useState<OpenTabsState>({ status: 'loading', data: EMPTY });
 

@@ -3,7 +3,6 @@ import { BrowserService, isOpenableUrl, type OpenDisposition } from '@/services/
 
 type Translate = (key: string) => string;
 
-/** Menu entries every card of links has: open everything it holds. */
 export const openAllItems = (
   t: Translate,
   urls: Array<string | undefined>,
@@ -15,7 +14,7 @@ export const openAllItems = (
     {
       id: 'open-all',
       label: t('cards.openAll'),
-      icon: 'external-link',
+      icon: 'open',
       disabled,
       onSelect: () => void BrowserService.openAll(urls),
     },
@@ -40,12 +39,11 @@ export const openAllItems = (
   ];
 };
 
-/** Menu entries every link row has: open it in the current tab, a new tab or window. */
 export const openLinkItems = (t: Translate, url: string): ContextMenuItem[] => {
   const open = (disposition: OpenDisposition) => () => void BrowserService.open(url, disposition);
 
   return [
-    { id: 'open', label: t('cards.open'), icon: 'external-link', onSelect: open('current') },
+    { id: 'open', label: t('cards.open'), icon: 'open', onSelect: open('current') },
     { id: 'open-tab', label: t('cards.openNewTab'), onSelect: open('tab') },
     { id: 'open-window', label: t('cards.openNewWindow'), onSelect: open('window') },
   ];

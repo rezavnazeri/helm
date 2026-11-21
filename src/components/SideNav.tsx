@@ -29,11 +29,11 @@ const SideNav: React.FC<SideNavProps> = ({
 }) => {
   const { t } = useI18n();
   const { settings } = useSettings();
-  
+
   const visibleSections = settings.spaceOrder.filter(
     (space): space is Space => SECTIONS.includes(space as Space) && settings.visibleSpaces[space] !== false,
   );
-  
+
   const activeIndex = visibleSections.indexOf(activeSpace);
 
   const navRef = useRef<HTMLElement>(null);

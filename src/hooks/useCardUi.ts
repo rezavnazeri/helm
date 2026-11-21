@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { MenuRequest } from '@/components/cards/types';
 
-/** Context-menu and inline-rename state that every card space needs. */
 export const useCardUi = () => {
   const [menu, setMenu] = useState<MenuRequest | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);

@@ -6,7 +6,6 @@
 const hasTabsApi = (): boolean =>
   typeof chrome !== 'undefined' && Boolean(chrome.tabs?.create);
 
-/** Bookmarklets and empty URLs cannot be opened in a tab. */
 export const isOpenableUrl = (url: string | undefined): url is string =>
   typeof url === 'string' && url.trim() !== '' && !/^javascript:/i.test(url.trim());
 
@@ -16,7 +15,6 @@ const openableUrls = (urls: Array<string | undefined>): string[] =>
 export type OpenDisposition = 'current' | 'tab' | 'background-tab' | 'window';
 
 export const BrowserService = {
-  /** Opens one link the way the user asked for. */
   open: (url: string, disposition: OpenDisposition): Promise<void> => {
     if (disposition === 'tab') return BrowserService.openInNewTab(url, true);
     if (disposition === 'background-tab') return BrowserService.openInNewTab(url, false);
@@ -24,7 +22,6 @@ export const BrowserService = {
     return BrowserService.openInCurrentTab(url);
   },
 
-  /** Replaces the current (Helm) tab. */
   openInCurrentTab: async (url: string): Promise<void> => {
     if (!isOpenableUrl(url)) return;
 

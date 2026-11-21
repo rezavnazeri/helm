@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useCallback, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { I18nProvider } from './i18n/I18nProvider';
 import { useI18n } from '@/i18n/useI18n';
 import { SettingsProvider } from './context/SettingsContext.tsx';
 import { useSettings } from './context/useSettings';
-import { useSwipe } from './hooks/useSwipe';
+import { useSpaceDrag } from './hooks/useSpaceDrag';
 import { useWallpaper } from './hooks/useWallpaper';
 import { Space } from './types/models';
 import { SIDE_NAV_FLEX_DIRECTION } from './constants/settings';
@@ -13,15 +14,15 @@ import Header from './components/Header';
 import Home from './spaces/Home';
 import Bookmarks from './spaces/Bookmarks';
 import Sessions from './spaces/Sessions';
-import SettingsDialog from './components/settings/SettingsDialog';
-import AddBookmarkDialog from './components/bookmarks/AddBookmarkDialog';
-import AddSessionDialog from './components/sessions/AddSessionDialog';
+import Notes from './spaces/Notes';
+import { createNote } from './services/noteSpace';
 import SpaceViewport from './components/SpaceViewport';
 import QuickAccess from './components/QuickAccess';
 import AddMenu, { type AddMenuOption } from './components/AddMenu';
 import { SECTION_ICONS, SECTIONS } from './constants/sections';
 
 import '@fontsource-variable/hanken-grotesk';
+import '@fontsource-variable/vazirmatn';
 import './styles/index.scss';
 import Icon from './components/Icon';
 
@@ -49,13 +50,23 @@ type AddDialogState =
   | { kind: 'session'; sessionId?: string }
   | null;
 
+// Dialogs are separate chunks: they are rarely opened, so the new tab does not parse their code.
+const loadSettingsDialog = () => import('./components/settings/SettingsDialog');
+const loadAddBookmarkDialog = () => import('./components/bookmarks/AddBookmarkDialog');
+const loadAddSessionDialog = () => import('./components/sessions/AddSessionDialog');
+
+const SettingsDialog = lazy(loadSettingsDialog);
+const AddBookmarkDialog = lazy(loadAddBookmarkDialog);
+const AddSessionDialog = lazy(loadAddSessionDialog);
+
 const MainApp: React.FC = () => {
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const { t, dir } = useI18n();
 
   const [activeSpace, setActiveSpace] = useState<Space>(
     () => (settings.rememberLastSpace ? readLastSpace() : undefined) ?? 'home',
   );
+  const [leavingSpace, setLeavingSpace] = useState<Space | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [addDialog, setAddDialog] = useState<AddDialogState>(null);
   const addOpen = addDialog !== null;
@@ -84,6 +95,23 @@ const MainApp: React.FC = () => {
     settings.quickAccessPosition === 'left' ? 'right' : 'left';
 
   useWallpaper();
+
+  // Fetch the dialog chunks once the page is idle, so opening one is still instant.
+  useEffect(() => {
+    const warm = () => {
+      void loadSettingsDialog();
+      void loadAddBookmarkDialog();
+      void loadAddSessionDialog();
+    };
+
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(warm, { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    const timer = window.setTimeout(warm, 1500);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -152,48 +180,52 @@ const MainApp: React.FC = () => {
     };
   }, [safeActiveSpace, visibleSections, settingsOpen, addOpen]);
 
-  const handleSwipe = useCallback(
-    (direction: 'left' | 'right') => {
-      if (!settings.swipeNavigation) return;
+  // Empty-area dragging and horizontal touchpad gestures move the space track.
+    const trackRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [peeking, setPeeking] = useState(false);
 
-      const idx = visibleSections.indexOf(safeActiveSpace);
-
-      if (
-        direction === 'left' &&
-        idx < visibleSections.length - 1
-      ) {
-        setActiveSpace(visibleSections[idx + 1]);
-      }
-
-      if (direction === 'right' && idx > 0) {
-        setActiveSpace(visibleSections[idx - 1]);
-      }
-    },
-    [
-      safeActiveSpace,
-      settings.swipeNavigation,
-      visibleSections,
-    ],
-  );
-
-  useSwipe(handleSwipe);
+  useSpaceDrag({
+    trackRef,
+    sliderRef,
+    index: activeIndex,
+    count: visibleSections.length,
+    enabled: settings.swipeNavigation && !settingsOpen && !addOpen,
+    onStart: () => setPeeking(true),
+    onSettle: () => setPeeking(false),
+    onChange: (delta) =>
+      flushSync(() => setActiveSpace(visibleSections[activeIndex + delta])),
+  });
 
   const handleSpaceChange = useCallback((space: Space) => {
     setActiveSpace(space);
   }, []);
 
-  // Show the space that just received something new.
   const showSpace = useCallback(
     (space: Space) => {
-      if (visibleSections.includes(space)) setActiveSpace(space);
+      if (settings.visibleSpaces[space] === false) {
+        void updateSettings({
+          visibleSpaces: { ...settings.visibleSpaces, [space]: true },
+        });
+      }
+
+      setActiveSpace(space);
     },
-    [visibleSections],
+    [settings.visibleSpaces, updateSettings],
   );
+
+  const handleNewNote = useCallback(() => {
+    const nameFor = (number: number) =>
+      number === 0 ? t('notes.defaultName') : t('notes.defaultNumberedName', { number });
+
+    void createNote(nameFor).then((id) => {
+      if (id) showSpace('notes');
+    });
+  }, [showSpace, t]);
 
   const handleFolderAdded = useCallback(() => showSpace('bookmarks'), [showSpace]);
   const handleSessionSaved = useCallback(() => showSpace('sessions'), [showSpace]);
 
-  // Everything the "+" menu can add. Spaces that gain adding contribute an entry here.
   const addOptions: AddMenuOption[] = [
     {
       id: 'bookmark',
@@ -207,25 +239,22 @@ const MainApp: React.FC = () => {
       label: t('navigation.newSession'),
       onSelect: handleOpenAddSession,
     },
+    {
+      id: 'note',
+      icon: SECTION_ICONS.notes,
+      label: t('navigation.newNote'),
+      onSelect: handleNewNote,
+    },
   ];
 
-  const renderSpace = () => {
-    switch (safeActiveSpace) {
-      case 'home':
-        return <Home />;
-
-      case 'bookmarks':
-        return <Bookmarks onAddFolder={handleOpenAddBookmark} />;
-
-      case 'sessions':
-        return <Sessions onAddSession={handleOpenAddSession} onAddTabs={handleOpenAddTabs} />;
-
+  const renderSpace = (space: Space) => {
+    switch (space) {
+      case 'home':      return <Home />;
+      case 'bookmarks': return <Bookmarks onAddFolder={handleOpenAddBookmark} />;
+      case 'sessions':  return <Sessions onAddSession={handleOpenAddSession} onAddTabs={handleOpenAddTabs} />;
+      case 'notes':     return <Notes onAddNote={handleNewNote} />;
       default:
-        return (
-          <div className="placeholder-space">
-            {t(`common.${safeActiveSpace}`)}
-          </div>
-        );
+        return <div className="placeholder-space">{t(`common.${space}`)}</div>;
     }
   };
 
@@ -247,6 +276,24 @@ const MainApp: React.FC = () => {
       addOptions={addOptions}
     />
   );
+
+  const previousSpaceRef = useRef<Space>(safeActiveSpace);
+
+  useEffect(() => {
+    const previous = previousSpaceRef.current;
+    previousSpaceRef.current = safeActiveSpace;
+
+    if (previous === safeActiveSpace) return;
+    if (settings.reducedMotion) return;
+
+    setLeavingSpace(previous);
+  }, [safeActiveSpace, settings.reducedMotion]);
+
+  useEffect(() => {
+    if (!leavingSpace) return;
+    const timer = window.setTimeout(() => setLeavingSpace(null), 400);
+    return () => window.clearTimeout(timer);
+  }, [leavingSpace]);
 
   return (
     <div
@@ -287,21 +334,21 @@ const MainApp: React.FC = () => {
               <QuickAccess position="below-header" />
             )}
 
-          <div className="app-content-track">
+          <div ref={trackRef} className="app-content-track">
             <div
+              ref={sliderRef}
               className="app-content-slider"
               style={{
-                transform: `translateX(-${activeIndex * 100}%)`,
+                transform: `translateX(calc(-${activeIndex * 100}% + var(--drag-offset, 0px)))`,
               }}
             >
-              {visibleSections.map((space) => (
-                <div
-                  key={space}
-                  className="app-content-space"
-                >
+              {visibleSections.map((space, spaceIndex) => (
+                <div key={space} className="app-content-space">
                   <SpaceViewport>
-                    {space === safeActiveSpace
-                      ? renderSpace()
+                    {space === safeActiveSpace ||
+                    space === leavingSpace ||
+                    (peeking && Math.abs(spaceIndex - activeIndex) === 1)
+                      ? renderSpace(space)
                       : null}
                   </SpaceViewport>
                 </div>
@@ -311,23 +358,28 @@ const MainApp: React.FC = () => {
         </div>
       </div>
 
-      <SettingsDialog
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      />
+      <Suspense fallback={null}>
+        {settingsOpen && (
+          <SettingsDialog isOpen onClose={() => setSettingsOpen(false)} />
+        )}
 
-      <AddBookmarkDialog
-        isOpen={addDialog?.kind === 'bookmark'}
-        onClose={handleCloseAdd}
-        onFolderAdded={handleFolderAdded}
-      />
+        {addDialog?.kind === 'bookmark' && (
+          <AddBookmarkDialog
+            isOpen
+            onClose={handleCloseAdd}
+            onFolderAdded={handleFolderAdded}
+          />
+        )}
 
-      <AddSessionDialog
-        isOpen={addDialog?.kind === 'session'}
-        sessionId={addDialog?.kind === 'session' ? addDialog.sessionId : undefined}
-        onClose={handleCloseAdd}
-        onSaved={handleSessionSaved}
-      />
+        {addDialog?.kind === 'session' && (
+          <AddSessionDialog
+            isOpen
+            sessionId={addDialog.sessionId}
+            onClose={handleCloseAdd}
+            onSaved={handleSessionSaved}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

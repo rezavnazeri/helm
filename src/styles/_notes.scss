@@ -1,0 +1,59 @@
+@use 'tokens';
+
+.note-text {
+  --note-height: 180px;
+
+  display: block;
+  flex: 0 0 auto;
+  width: 100%;
+  height: var(--note-height);
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--button-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  overflow-y: auto;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:focus {
+    border-color: var(--theme-strong);
+  }
+}
+
+.note-copy {
+  position: relative;
+  display: flex;
+}
+
+.note-copied {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-end: 0;
+  z-index: 5;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: note-copied-in calc(var(--transition-speed, 0.4s) * 0.4) ease-out;
+}
+
+@keyframes note-copied-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

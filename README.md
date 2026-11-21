@@ -1,6 +1,6 @@
 # Helm
 
-Helm is a calm, wallpaper-first new tab environment for Chrome. It turns your blank new tab into a customizable workspace with quick access to your favorite websites, bookmarks, saved sessions, weather, and more.
+Helm is a calm, wallpaper-first new tab environment for Chrome. It turns your blank new tab into a customizable workspace with quick access to your favorite websites, bookmarks, saved sessions, notes, weather, and more.
 
 **Your new tab should be a useful workspace, not just a blank page.**
 
@@ -18,9 +18,9 @@ Helm is a calm, wallpaper-first new tab environment for Chrome. It turns your bl
 - Built-in and custom wallpapers
 - Light, dark, and automatic themes
 - Adjustable wallpaper dimming
-- Customizable Quick Access shortcuts with drag-and-drop reordering
-- Flexible, repositionable SideNav and Quick Access
-- Responsive, customizable spaces and cards
+- Customizable Quick Access shortcuts
+- Repositionable SideNav and Quick Access
+- Flexible, responsive spaces and cards
 
 ### Bookmarks
 
@@ -37,11 +37,19 @@ A curated view of your Chrome bookmark folders, seamlessly integrated with your 
 Save tabs for later without adding them to your bookmarks.
 
 - Save open tabs and entire tab groups as sessions
-- Search and select individual tabs or entire groups
+- Search and select individual tabs or groups
 - Add tabs to existing sessions
 - Restore individual tabs or entire sessions
 - Open sessions in new tabs, windows, or tab groups
-- Rename, organize, and remove saved tabs
+- Rename and manage saved tabs and sessions
+
+### Notes
+
+Keep lightweight notes right alongside your bookmarks and sessions.
+
+- Create plain-text notes with automatic saving
+- Rename, copy, and delete notes
+- Organize notes using the same flexible card layout as other spaces
 
 ### Other Features
 
@@ -56,11 +64,10 @@ Helm is actively evolving. The following features are planned for future release
 **Workspaces**
 - Organize browsing around projects and contexts
 - Associate sessions and browser activity with workspaces
-- Quickly switch between different workspaces
+- Quickly switch between workspaces
 
 **Productivity**
 - Lightweight task management
-- Contextual notes
 - Reminders associated with browser activity
 - Quick capture from the new tab page
 
@@ -110,8 +117,9 @@ npm run build
 
 Helm does not require an account or backend. Application data is stored locally using Chrome storage and IndexedDB.
 
-- **Bookmarks:** Helm accesses your Chrome bookmarks directly. It stores only the folders you've selected for display and their layout preferences.
-- **Sessions:** Saved session information, including tab titles and URLs, is stored locally in Chrome storage.
+- **Bookmarks:** Helm accesses your Chrome bookmarks directly and stores your selected folders and layout preferences.
+- **Sessions:** Saved session information, including tab titles and URLs, is stored locally.
+- **Notes:** Notes are saved automatically.
 - **Wallpapers:** Custom wallpapers are stored locally in IndexedDB.
 - **Weather:** Weather data is retrieved from Open-Meteo when the feature is used.
 - **Quick Access:** Favicons are retrieved from Google's favicon service and cached locally.
@@ -122,11 +130,3 @@ Custom wallpapers are not currently included in JSON backups.
 
 Helm is licensed under the MIT License.
 See [LICENSE](LICENSE) for details.
-
-## Status
-
-Helm is an open-source project under active development.
-
-The current release includes the customizable new tab experience, Quick Access, Bookmarks, Sessions, weather, and local data management. More spaces and productivity features are planned for future releases.
-
-Features and APIs may change as development continues.

@@ -22,7 +22,6 @@ interface BookmarkRowProps {
   onCancelRename: () => void;
 }
 
-/** A bookmark: favicon, name, short address and an options button. */
 const BookmarkRow: React.FC<BookmarkRowProps> = ({
   id,
   title,

@@ -1,10 +1,5 @@
 import { StorageService } from '@/services/storage';
-import {
-  CARD_ICONS,
-  type CardBase,
-  type CardIcon,
-  type Cells,
-} from '@/types/cards';
+import type { CardBase, Cells } from '@/types/cards';
 
 /**
  * Layout store shared by every card space (Bookmarks, Sessions, ...).
@@ -42,20 +37,15 @@ export interface CardStore<Card extends CardBase> {
 
 interface CardStoreOptions<Extra extends object> {
   storageKey: string;
-  defaultIcon: CardIcon;
   /** Reads (and validates) the space's own fields from stored data. */
   readExtra?: (raw: Record<string, unknown>) => Extra;
 }
-
-const isCardIcon = (value: unknown): value is CardIcon =>
-  typeof value === 'string' && (CARD_ICONS as readonly string[]).includes(value);
 
 const sameCells = (a: unknown, b: unknown): boolean =>
   JSON.stringify(a) === JSON.stringify(b);
 
 export const createCardStore = <Extra extends object = object>({
   storageKey,
-  defaultIcon,
   readExtra,
 }: CardStoreOptions<Extra>): CardStore<CardBase & Extra> => {
   type Card = CardBase & Extra;
@@ -79,7 +69,6 @@ export const createCardStore = <Extra extends object = object>({
         cells.push({
           ...(readExtra ? readExtra(raw) : {}),
           id: raw.id,
-          icon: isCardIcon(raw.icon) ? raw.icon : defaultIcon,
           collapsed: raw.collapsed === true,
         } as Card);
       } else {

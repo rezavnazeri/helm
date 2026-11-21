@@ -7,7 +7,7 @@ export const StorageService = {
         });
       });
     }
-    
+
     try {
       const value = localStorage.getItem(key);
       return value ? JSON.parse(value) as T : undefined;
@@ -18,13 +18,12 @@ export const StorageService = {
   },
 
   set: async <T>(key: string, value: T): Promise<void> => {
-    // Check if running in Chrome extension context
     if (typeof chrome !== 'undefined' && chrome.storage?.local) {
       return new Promise((resolve) => {
         chrome.storage.local.set({ [key]: value }, resolve);
       });
     }
-    
+
     try {
       localStorage.setItem(key, JSON.stringify(value));
       console.log(`[Storage] Saved "${key}" to localStorage (development mode)`);
@@ -40,7 +39,7 @@ export const StorageService = {
         chrome.storage.local.remove(key, resolve);
       });
     }
-    
+
     try {
       localStorage.removeItem(key);
       console.log(`[Storage] Removed "${key}" from localStorage (development mode)`);

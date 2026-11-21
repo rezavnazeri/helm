@@ -33,7 +33,7 @@ const SpaceViewport: React.FC<SpaceViewportProps> = ({ children }) => {
     if (!element) return;
 
     const resizeObserver = new ResizeObserver(measure);
-    
+
     const observeChildren = () => {
       resizeObserver.disconnect();
       resizeObserver.observe(element);

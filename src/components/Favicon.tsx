@@ -7,7 +7,6 @@ interface FaviconProps {
   className: string;
 }
 
-/** Site icon from Chrome's own favicon store; a globe when there is none. */
 const Favicon: React.FC<FaviconProps> = ({ url, className }) => {
   const [broken, setBroken] = useState(false);
 

@@ -70,7 +70,6 @@ const Header: React.FC = () => {
               <span className="weather-icon">{weather.icon}</span>
               <span className="weather-temp">{weather.temperature}°</span>
               <span className="weather-desc">{t(`weather.codes.${weather.code}`)}</span>
-              {/*<span className="weather-location">{weather.locationName}</span>*/}
             </>
           )}
         </div>

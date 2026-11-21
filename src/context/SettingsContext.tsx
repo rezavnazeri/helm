@@ -123,7 +123,9 @@ export const SettingsProvider: React.FC<{
 
         const normalized = normalizeSettings(stored);
 
-        setSettings(normalized);
+        setSettings((previous) =>
+          JSON.stringify(previous) === JSON.stringify(normalized) ? previous : normalized,
+        );
         writeBootstrapSettings(normalized);
       } catch (error) {
         console.error(

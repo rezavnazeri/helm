@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSettings } from '@/context/useSettings';
-import { getCustomWallpaper } from '@/services/customWallpaper';
+import { dropLegacyDataUrl, getCustomWallpaper } from '@/services/customWallpaper';
 import { WALLPAPER_MAP } from '@/constants/wallpapers';
 
 const toCssUrl = (value: string) =>
@@ -8,6 +8,17 @@ const toCssUrl = (value: string) =>
 
 async function blobToObjectUrl(blob: Blob): Promise<string> {
   return URL.createObjectURL(blob);
+}
+
+async function takeBootWallpaper(revision: number) {
+  const early = await window.__helm?.customWallpaper;
+  if (!early) return null;
+
+  if (early.revision === revision) return early;
+
+  URL.revokeObjectURL(early.url);
+  window.__helm = undefined;
+  return null;
 }
 
 export const useWallpaper = () => {
@@ -24,13 +35,18 @@ export const useWallpaper = () => {
           WALLPAPER_MAP.default.DetectedTheme;
 
         if (settings.wallpaper === 'custom') {
-          const custom = await getCustomWallpaper();
+          const early = await takeBootWallpaper(settings.wallpaperRevision);
+          const custom = early ? null : await getCustomWallpaper();
 
           if (cancelled) {
             return;
           }
 
-          if (custom?.blob) {
+          if (early) {
+            source = early.url;
+            void dropLegacyDataUrl();
+            detected = early.theme ?? WALLPAPER_MAP.default.DetectedTheme;
+          } else if (custom?.blob) {
             source = await blobToObjectUrl(custom.blob);
             createdObjectUrl = source;
             detected = custom.DetectedTheme;
@@ -90,13 +106,14 @@ export const useWallpaper = () => {
               ...cached,
               theme: settings.theme,
               wallpaper: settings.wallpaper,
+              wallpaperUrl: settings.wallpaper === 'custom' ? '' : source,
               wallpaperRevision: settings.wallpaperRevision,
               wallpaperDimming: settings.wallpaperDimming,
               resolvedTheme: detected,
             }),
           );
         } catch {
-          // Startup cache is optional.
+
         }
       } catch (error) {
         console.error(

@@ -6,7 +6,6 @@ export interface SessionTab {
   url: string;
 }
 
-/** Fields a session card stores next to the shared card fields. */
 export interface SessionExtra {
   name: string;
   tabs: SessionTab[];

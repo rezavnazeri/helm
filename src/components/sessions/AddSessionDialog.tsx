@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import AddDialogShell from '@/components/dialog/AddDialogShell';
-import IconPicker from '@/components/dialog/IconPicker';
 import Favicon from '@/components/Favicon';
 import Icon from '@/components/Icon';
 import { useCardStore } from '@/hooks/useCardStore';
@@ -9,11 +8,9 @@ import { useI18n } from '@/i18n/useI18n';
 import { createSessionTab, SessionStore } from '@/services/sessionSpace';
 import type { OpenGroup, OpenTab } from '@/services/tabs';
 import { NO_GROUP } from '@/services/tabs';
-import type { CardIcon } from '@/types/cards';
 
 interface AddSessionDialogProps {
   isOpen: boolean;
-  /** Add tabs to this session instead of creating a new one. */
   sessionId?: string;
   onClose: () => void;
   onSaved: () => void;
@@ -31,7 +28,6 @@ const stateOf = (ids: number[], selected: ReadonlySet<number>): CheckState => {
   return count === ids.length ? 'all' : 'some';
 };
 
-/** Tabs in tab order; the tabs of a group are gathered under one group node. */
 const buildTree = (tabs: OpenTab[], groups: OpenGroup[]): TreeItem[] => {
   const known = new Map(groups.map((group) => [group.id, group]));
   const nodes = new Map<number, Extract<TreeItem, { kind: 'group' }>>();
@@ -64,17 +60,22 @@ const Check: React.FC<{ state: CheckState }> = ({ state }) => (
   </span>
 );
 
-interface RowsProps {
+interface TabRowProps {
+  tab: OpenTab;
+  depth: number;
   selected: ReadonlySet<number>;
-  onToggle: (ids: number[]) => void;
+  onSelectTab: (id: number, range: boolean) => void;
 }
 
-const TabRow: React.FC<RowsProps & { tab: OpenTab; depth: number }> = ({
-  tab,
-  depth,
-  selected,
-  onToggle,
-}) => {
+interface GroupRowProps {
+  group: OpenGroup;
+  tabs: OpenTab[];
+  selected: ReadonlySet<number>;
+  onToggle: (ids: number[]) => void;
+  onSelectTab: TabRowProps['onSelectTab'];
+}
+
+const TabRow: React.FC<TabRowProps> = ({ tab, depth, selected, onSelectTab }) => {
   const checked = selected.has(tab.id);
 
   return (
@@ -89,7 +90,7 @@ const TabRow: React.FC<RowsProps & { tab: OpenTab; depth: number }> = ({
           role="checkbox"
           aria-checked={checked}
           className="tree-select"
-          onClick={() => onToggle([tab.id])}
+          onClick={(event) => onSelectTab(tab.id, event.shiftKey)}
         >
           <Check state={checked ? 'all' : 'none'} />
           <Favicon url={tab.url} className="tree-favicon" />
@@ -100,12 +101,7 @@ const TabRow: React.FC<RowsProps & { tab: OpenTab; depth: number }> = ({
   );
 };
 
-const GroupRow: React.FC<RowsProps & { group: OpenGroup; tabs: OpenTab[] }> = ({
-  group,
-  tabs,
-  selected,
-  onToggle,
-}) => {
+const GroupRow: React.FC<GroupRowProps> = ({ group, tabs, selected, onToggle, onSelectTab }) => {
   const { t } = useI18n();
   const [open, setOpen] = useState(true);
 
@@ -142,7 +138,7 @@ const GroupRow: React.FC<RowsProps & { group: OpenGroup; tabs: OpenTab[] }> = ({
       {open && (
         <ul role="group">
           {tabs.map((tab) => (
-            <TabRow key={tab.id} tab={tab} depth={1} selected={selected} onToggle={onToggle} />
+            <TabRow key={tab.id} tab={tab} depth={1} selected={selected} onSelectTab={onSelectTab} />
           ))}
         </ul>
       )}
@@ -158,7 +154,6 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
   const { t } = useI18n();
   const { status, data } = useOpenTabs();
 
-  // The session being extended, if any (read once when the dialog opens).
   const [existing] = useState(() =>
     sessionId
       ? SessionStore.getSnapshot().cells.find((cell) => cell?.id === sessionId) ?? null
@@ -168,12 +163,10 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
   const target = existing && cells.some((cell) => cell?.id === existing.id) ? existing : null;
 
   const [name, setName] = useState(existing?.name || t('sessions.defaultName'));
-  const [icon, setIcon] = useState<CardIcon>(existing?.icon ?? 'layers');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<ReadonlySet<number>>(new Set());
   const [busy, setBusy] = useState(false);
 
-  // Tabs that are already in the session are not offered again.
   const available = useMemo(() => {
     const taken = new Set(target?.tabs.map((tab) => tab.url));
     return data.tabs.filter((tab) => !taken.has(tab.url));
@@ -205,6 +198,26 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
       return next;
     });
 
+  const listedIds = useMemo(
+    () => tree.flatMap((item) => (item.kind === 'tab' ? [item.tab.id] : item.tabs.map((tab) => tab.id))),
+    [tree],
+  );
+  const lastClicked = useRef<number | null>(null);
+
+  const selectTab = (id: number, range: boolean) => {
+    const from = lastClicked.current === null ? -1 : listedIds.indexOf(lastClicked.current);
+    const to = listedIds.indexOf(id);
+
+    if (range && from !== -1 && to !== -1) {
+      const between = listedIds.slice(Math.min(from, to), Math.max(from, to) + 1);
+      setSelected((previous) => new Set([...previous, ...between]));
+    } else {
+      toggle([id]);
+    }
+
+    lastClicked.current = id;
+  };
+
   const save = async () => {
     if (chosen.length === 0 || busy) return;
     setBusy(true);
@@ -217,13 +230,11 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
         await SessionStore.patch(target.id, (card) => ({
           ...card,
           name: finalName,
-          icon,
           tabs: [...card.tabs, ...tabs],
         }));
       } else {
         await SessionStore.add({
           id: crypto.randomUUID(),
-          icon,
           collapsed: false,
           name: finalName,
           tabs,
@@ -329,7 +340,7 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
                   tab={item.tab}
                   depth={0}
                   selected={selected}
-                  onToggle={toggle}
+                  onSelectTab={selectTab}
                 />
               ) : (
                 <GroupRow
@@ -338,6 +349,7 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
                   tabs={item.tabs}
                   selected={selected}
                   onToggle={toggle}
+                  onSelectTab={selectTab}
                 />
               ),
             )}
@@ -345,7 +357,6 @@ const Content: React.FC<Omit<AddSessionDialogProps, 'isOpen'>> = ({
         )}
       </div>
 
-      <IconPicker value={icon} onChange={setIcon} />
     </AddDialogShell>
   );
 };

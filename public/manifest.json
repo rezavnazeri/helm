@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Helm",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "A calm, wallpaper-first new tab environment.",
   "chrome_url_overrides": {
     "newtab": "index.html"
@@ -24,8 +24,6 @@
   "host_permissions": [
     "https://geocoding-api.open-meteo.com/*",
     "https://api.open-meteo.com/*",
-    "https://fonts.googleapis.com/*",
-    "https://fonts.gstatic.com/*",
     "https://www.google.com/*",
     "https://*.gstatic.com/*"
   ],

@@ -32,7 +32,7 @@ export type IconName =
   | 'more-menu'
   | 'chevron-down'
   | 'chevron-up'
-  | 'external-link'
+  | 'open'
   | 'download'
   | 'alert'
   | 'drag'
@@ -41,7 +41,8 @@ export type IconName =
   | 'clock'
   | 'beach'
   | 'play'
-  | 'book';
+  | 'book'
+  | 'copy';
 
 interface IconProps {
   name: IconName;
@@ -82,14 +83,15 @@ const ICON_PATHS: Record<string, { line: string; solid?: string }> = {
   download: { line: '/icons/download-line.svg', solid: '/icons/download-line.svg' },
   upload: { line: '/icons/upload-line.svg', solid: '/icons/upload-line.svg' },
   alert: { line: '/icons/alert-line.svg', solid: '/icons/alert-line.svg' },
-  'external-link': { line: '/icons/external-link-line.svg', solid: '/icons/external-link-line.svg' },
-  delete: { line: '/icons/delete-bin-line.svg' },
+  open: { line: '/icons/open-line.svg', solid: '/icons/open-solid.svg' },
+  delete: { line: '/icons/delete-bin-line.svg', solid: '/icons/delete-bin-solid.svg' },
   cloud: { line: '/icons/cloud-line.svg' },
   code: { line: '/icons/code.svg', solid: '/icons/code.svg' },
   clock: { line: '/icons/clock.svg', solid: '/icons/clock.svg' },
   beach: { line: '/icons/beach.svg', solid: '/icons/beach.svg' },
   play: { line: '/icons/play-circle.svg', solid: '/icons/play-circle.svg' },
   book: { line: '/icons/book-open.svg', solid: '/icons/book-open.svg' },
+  copy: { line: '/icons/copy-line.svg', solid: '/icons/copy-solid.svg' }
 };
 
 const Icon: React.FC<IconProps> = ({ name, variant = 'line', size = 20, color = 'currentColor', className = '' }) => {

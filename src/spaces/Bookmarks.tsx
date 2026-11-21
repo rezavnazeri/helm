@@ -5,6 +5,7 @@ import CardGrid from '@/components/cards/CardGrid';
 import { openAllItems, openLinkItems, renameItem } from '@/components/cards/menuItems';
 import type { MenuRequest } from '@/components/cards/types';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
+import { SECTION_ICONS } from '@/constants/sections';
 import { useBookmarkTree } from '@/hooks/useBookmarkTree';
 import { useCardStore } from '@/hooks/useCardStore';
 import { useCardUi } from '@/hooks/useCardUi';
@@ -134,7 +135,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ onAddFolder }) => {
           return (
             <Card
               id={folder.id}
-              icon={card.icon}
+              icon={SECTION_ICONS.bookmarks}
               title={folder.title}
               count={bookmarks.length}
               collapsed={card.collapsed}

@@ -6,6 +6,7 @@ import type { MenuRequest } from '@/components/cards/types';
 import ContextMenu, { type ContextMenuItem } from '@/components/ContextMenu';
 import SessionRow from '@/components/sessions/SessionRow';
 import Icon from '@/components/Icon';
+import { SECTION_ICONS } from '@/constants/sections';
 import { useCardStore } from '@/hooks/useCardStore';
 import { useCardUi } from '@/hooks/useCardUi';
 import { useI18n } from '@/i18n/useI18n';
@@ -14,10 +15,8 @@ import { SessionStore } from '@/services/sessionSpace';
 import { lastOccupiedIndex } from '@/utils/cardGrid';
 
 interface SessionsProps {
-  /** Opens the dialog that saves the open tabs as a new session. */
-  onAddSession: () => void;
-  /** Opens the same dialog to add tabs to an existing session. */
-  onAddTabs: (sessionId: string) => void;
+    onAddSession: () => void;
+    onAddTabs: (sessionId: string) => void;
 }
 
 const Sessions: React.FC<SessionsProps> = ({ onAddSession, onAddTabs }) => {
@@ -106,7 +105,7 @@ const Sessions: React.FC<SessionsProps> = ({ onAddSession, onAddTabs }) => {
         renderCard={(session, host) => (
           <Card
             id={session.id}
-            icon={session.icon}
+            icon={SECTION_ICONS.sessions}
             title={session.name}
             count={session.tabs.length}
             collapsed={session.collapsed}

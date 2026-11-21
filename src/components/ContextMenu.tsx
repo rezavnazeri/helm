@@ -17,6 +17,7 @@ interface ContextMenuProps {
   x: number;
   y: number;
   alignEnd?: boolean;
+  alignBottom?: boolean;
   label: string;
   items: ContextMenuItem[];
   onClose: () => void;
@@ -28,6 +29,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   x,
   y,
   alignEnd = false,
+  alignBottom = false,
   label,
   items,
   onClose,
@@ -42,12 +44,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     const desiredLeft = alignEnd ? x - width : x;
     const maxLeft = window.innerWidth - width - VIEWPORT_MARGIN;
     const maxTop = window.innerHeight - height - VIEWPORT_MARGIN;
+    const desiredTop = alignBottom ? y - height : y;
 
     menu.style.left = `${Math.max(VIEWPORT_MARGIN, Math.min(desiredLeft, maxLeft))}px`;
-    menu.style.top = `${Math.max(VIEWPORT_MARGIN, Math.min(y, maxTop))}px`;
+    menu.style.top = `${Math.max(VIEWPORT_MARGIN, Math.min(desiredTop, maxTop))}px`;
     menu.style.visibility = 'visible';
     menu.focus({ preventScroll: true });
-  }, [x, y, alignEnd]);
+  }, [x, y, alignEnd, alignBottom]);
 
   useEffect(() => {
     const closeOnOutside = (event: Event) => {
@@ -137,7 +140,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             }}
           >
             {item.icon
-              ? <Icon name={item.icon} size={16} className="context-menu-icon" />
+              ? <Icon name={item.icon} variant="solid" size={16} className="context-menu-icon" />
               : <span className="context-menu-icon" aria-hidden="true" />}
             <span>{item.label}</span>
           </button>

@@ -24,13 +24,15 @@ const AboutSettings: React.FC = () => {
       <div className="about-links">
         <a href="https://github.com/rezavnazeri/helm" target="_blank" rel="noreferrer">
           {t('about.github')}
-          <Icon name="external-link" size={14} />
+          <Icon name="open" size={14} />
         </a>
         <a href="https://github.com/rezavnazeri/helm/blob/main/LICENSE" target="_blank" rel="noreferrer">
           {t('about.licenses')}
+          <Icon name="open" size={14} />
         </a>
         <a href="https://github.com/rezavnazeri/helm#privacy" target="_blank" rel="noreferrer">
           {t('about.privacy')}
+          <Icon name="open" size={14} />
         </a>
       </div>
     </div>

@@ -21,9 +21,7 @@ interface CacheEntry {
 type CacheRecord = Record<string, CacheEntry>;
 
 export interface FaviconSnapshot {
-  /** Cache key -> data URL. */
   icons: Record<string, string>;
-  /** Keys whose icon is older than MAX_AGE_MS and should be refreshed. */
   stale: string[];
 }
 
@@ -116,7 +114,6 @@ const download = async (source: string): Promise<string | undefined> => {
 export const FaviconCache = {
   keyFor,
 
-  /** Reads the cache once; later calls are served from memory. */
   load: async (): Promise<FaviconSnapshot> => {
     const record = await loadMemory();
     const now = Date.now();
@@ -162,7 +159,6 @@ export const FaviconCache = {
     return task;
   },
 
-  /** Drops icons that no shortcut uses any more. */
   prune: async (keepKeys: string[]): Promise<void> => {
     const record = await loadMemory();
     const keep = new Set(keepKeys);

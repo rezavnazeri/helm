@@ -1,5 +1,5 @@
 :root {
-  --font-family: 'Hanken Grotesk Variable', 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family: 'Hanken Grotesk Variable', 'Vazirmatn Variable', -apple-system, BlinkMacSystemFont, sans-serif;
   --radius-card: 20px;
   --radius-panel: 16px;
   --nav-width: 64px;
@@ -60,8 +60,8 @@
   --shadow: 0 8px 30px rgba(0,0,0,.5);
   --shadow-sm: 0 2px 8px rgba(0,0,0,.3);
   --shadow-new: 
-    0 10px 30px rgba(0, 0, 0, 0.6), /* Outer drop shadow */
-    inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Inner top highlight */
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --inner-shadow: inset 0 1px 2px rgba(255,255,255,.25);
   --scrollbar-thumb: rgba(255,255,255,.2);
   --scrollbar-thumb-hover: rgba(255,255,255,.3);

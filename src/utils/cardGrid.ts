@@ -1,9 +1,7 @@
 import type { CardBase, Cells } from '@/types/cards';
 
-/** Rows that are always available as drop targets. */
 export const RESERVED_ROWS = 5;
 
-/** Index of the last cell that holds a card, or -1. */
 export const lastOccupiedIndex = (
   cells: Cells<CardBase>,
   ignoreId?: string,

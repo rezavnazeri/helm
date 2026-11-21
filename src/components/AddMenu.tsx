@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useI18n } from '@/i18n/useI18n';
+import ContextMenu, { type ContextMenuItem } from './ContextMenu';
 import Icon, { type IconName } from './Icon';
 import type { SideNavPosition } from '@/types/settings';
 
-/** One entry of the add menu; every space that can add things contributes one. */
 export interface AddMenuOption {
   id: string;
   icon: IconName;
@@ -17,46 +17,83 @@ interface AddMenuProps {
   floating?: boolean;
 }
 
+interface MenuAnchor {
+  x: number;
+  y: number;
+  alignEnd: boolean;
+  alignBottom: boolean;
+}
+
+const GAP = 8;
+
+const anchorFor = (rect: DOMRect, position: SideNavPosition): MenuAnchor => {
+  const lowerHalf = rect.top + rect.height / 2 > window.innerHeight / 2;
+  const rightHalf = rect.left + rect.width / 2 > window.innerWidth / 2;
+
+  if (position === 'left' || position === 'right') {
+    const toTheLeft = position === 'right';
+
+    return {
+      x: toTheLeft ? rect.left - GAP : rect.right + GAP,
+      y: lowerHalf ? rect.bottom : rect.top,
+      alignEnd: toTheLeft,
+      alignBottom: lowerHalf,
+    };
+  }
+
+  const below = position === 'top';
+
+  return {
+    x: rightHalf ? rect.right : rect.left,
+    y: below ? rect.bottom + GAP : rect.top - GAP,
+    alignEnd: rightHalf,
+    alignBottom: !below,
+  };
+};
+
 const AddMenu: React.FC<AddMenuProps> = ({ position, options, floating = false }) => {
   const { t } = useI18n();
-  const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<MenuAnchor | null>(null);
 
-  const closeAnd = (action: () => void) => {
-    setOpen(false);
-    action();
-  };
+  const close = useCallback(() => setAnchor(null), []);
+
+  const items: ContextMenuItem[] = options.map((option) => ({
+    id: option.id,
+    label: option.label,
+    icon: option.icon,
+    onSelect: option.onSelect,
+  }));
 
   return (
-    <div className={`add-menu-anchor${floating ? ' add-menu-anchor--floating' : ''}`}>
-      <div
-        className={`add-menu add-menu--${position} ${floating ? 'is-fade' : 'is-slide'}${open ? ' is-open' : ''}`}
-        aria-hidden={!open}
-      >
-        {options.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            className="add-menu-option"
-            data-tooltip={option.label}
-            aria-label={option.label}
-            tabIndex={open ? 0 : -1}
-            onClick={() => closeAnd(option.onSelect)}
-          >
-            <Icon name={option.icon} variant="solid" size={16} />
-          </button>
-        ))}
-      </div>
-
+    <>
       <button
         type="button"
-        className={`${floating ? 'floating-utility' : 'nav-utility'} add-menu-trigger${open ? ' is-open' : ''}`}
+        className={`${floating ? 'floating-utility' : 'nav-utility'} add-menu-trigger`}
+        data-menu-owner="add"
         aria-label={t('navigation.add')}
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
+        aria-haspopup="menu"
+        aria-expanded={anchor !== null}
+        onClick={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          setAnchor((current) => (current ? null : anchorFor(rect, position)));
+        }}
       >
         <Icon name="plus" variant="line" size={20} />
       </button>
-    </div>
+
+      {anchor && (
+        <ContextMenu
+          ownerKey="add"
+          x={anchor.x}
+          y={anchor.y}
+          alignEnd={anchor.alignEnd}
+          alignBottom={anchor.alignBottom}
+          label={t('navigation.add')}
+          items={items}
+          onClose={close}
+        />
+      )}
+    </>
   );
 };
 
